@@ -1,0 +1,19 @@
+{
+  "name": "serieztv-api",
+  "version": "0.1.0",
+  "description": "SeriezTV API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OEA/serieztv-api.git"
+  },
+  "author": "Omer Emre Aslan, Goktug Berk Ulu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OEA/serieztv-api/issues"
+  },
+  "homepage": "https://github.com/OEA/serieztv-api#readme"
+}
