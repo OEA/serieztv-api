@@ -27,5 +27,8 @@
     "babel-cli": "^6.16.0",
     "babel-preset-es2015": "^6.16.0",
     "nodemon": "^1.11.0"
+  },
+  "engines": {
+    "node": "^6.9.1"
   }
 }
