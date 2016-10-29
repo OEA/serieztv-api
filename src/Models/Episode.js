@@ -6,9 +6,9 @@ var Schema = mongoose.Schema;
 
 const episodeSchema = new Schema ({
     name: {type: String, required: true},
-    seasonID: {type: Number, required: true},
-    crew: {type: [Crew], required: true},
-    guestStars: {type: [Star], required: true},
+    seasonID: {type: mongoose.Schema.ObjectId, ref: 'Season', required: true},
+    crew: {type: mongoose.Schema.ObjectId, ref: ['Crew'], required: true},
+    guestStars: {type: mongoose.Schema.ObjectId, ref: ['Star'], required: true},
     overview: {type: String, required: true},
     imdbScore: {type: Number, required: true},
     imdbRating: {type: Number, required: true},
