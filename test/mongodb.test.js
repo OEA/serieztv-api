@@ -5,8 +5,9 @@ mongoose.connect('mongodb://localhost/serieztv-tests');
 
 describe('Mongoose', ()=> {
     describe('#connection', ()=> {
-        it('should return mongoose connection', ()=> {
+        it('should return mongoose connection', (done)=> {
             assert.notEqual(mongoose.connection, null);
+            done();
         });
     });
 });
