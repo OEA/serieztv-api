@@ -3,3 +3,4 @@
  */
 
 import './mongodb.test';
+import './models/';
