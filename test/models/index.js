@@ -3,3 +3,7 @@
  */
 
 import './user.test';
+import './crew.test';
+import './character.test'
+import './genre.test'
+import './star.test'
