@@ -16,8 +16,7 @@ describe('User', ()=> {
 
     it('should create and save new user', (done) => {
         const user = new User({
-            name: 'Obi-Wan',
-            surname: 'Kenobi',
+            name: 'Obi-Wan Kenobi',
             email: 'deathstar@gmail.com',
             password: '1234',
             activated: true,
@@ -31,17 +30,16 @@ describe('User', ()=> {
     });
 
     it('should return created user that is Obi-Wan Kenobi', (done) => {
-        User.find({name: 'Obi-Wan'}).limit(1).exec((error, users)=> {
+        User.find({name: 'Obi-Wan Kenobi'}).limit(1).exec((error, users)=> {
             const user = users[0];
-            assert.equal(user.name, 'Obi-Wan');
+            assert.equal(user.name, 'Obi-Wan Kenobi');
             done();
         });
     });
 
     it('should give error when same user is wanted to create', (done) => {
         const user = new User({
-            name: 'Obi-Wan',
-            surname: 'Kenobi',
+            name: 'Obi-Wan Kenobi',
             email: 'deathstar@gmail.com',
             password: '1234',
             activated: true,
