@@ -6,8 +6,8 @@ var Schema = mongoose.Schema;
 
 const seriesSchema = new Schema ({
     name: {type: String, required: true},
-    stars: {type: [Star], required: true},
-    genres: {type: [Genre], required: true},
+    stars: {type: mongoose.Schema.ObjectId, ref:['Star'], required: true},
+    genres: {type: mongoose.Schema.ObjectId, ref:['Genre'], required: true},
     overview: {type: String, required: true},
     status: {type: String, required: true},
     poster: {type: String, required: true},
@@ -18,6 +18,7 @@ const seriesSchema = new Schema ({
     firstAir: {type: Date, required: true},
     createdAt: {type: Date},
     updatedAt: {type: Date},
+    active: {type: Boolean, required: true},
     apiID: {type: String, required: true, select: false}
 });
 
