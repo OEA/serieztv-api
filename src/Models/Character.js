@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 var Schema = mongoose.Schema;
 
 const characterSchema =  new Schema ({
-    starName: {type: String, required: true},
+    star: {type: mongoose.Schema.ObjectId, ref: 'Star', required: true},
     characterName: {type: String, required: true},
     characterImage: {type: String, required: true},
     apiID: {type: String, required: true, select: false},
