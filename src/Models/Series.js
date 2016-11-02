@@ -21,4 +21,6 @@ const seriesSchema = new Schema ({
     apiID: {type: String, required: true, select: false}
 });
 
+seriesSchema.set('toJSON', { getters: true });
+
 export default mongoose.model('Series', seriesSchema);

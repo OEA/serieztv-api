@@ -8,4 +8,6 @@ const genreSchema = new Schema ({
     updatedAt: {type: Date}
 });
 
+genreSchema.set('toJSON', { getters: true });
+
 export default mongoose.model('Genre', genreSchema);

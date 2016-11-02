@@ -11,4 +11,6 @@ const starSchema = new Schema ({
     apiID: {type: String, required: true, select: false}
 });
 
+starSchema.set('toJSON', { getters: true });
+
 export default mongoose.model('Star', starSchema);

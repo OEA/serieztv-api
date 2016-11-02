@@ -12,4 +12,6 @@ const crewSchema = new Schema ({
     updatedAt: {type: Date}
 });
 
+crewSchema.set('toJSON', { getters: true });
+
 export default mongoose.model('Crew', crewSchema);

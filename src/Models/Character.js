@@ -11,4 +11,6 @@ const characterSchema =  new Schema ({
     updatedAt: {type: Date}
 });
 
+characterSchema.set('toJSON', { getters: true });
+
 export default mongoose.model('Character', characterSchema);

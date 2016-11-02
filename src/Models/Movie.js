@@ -5,8 +5,8 @@ var Schema = mongoose.Schema;
 
 const movieSchema = new Schema ({
     name: {type: String, required: true},
-    stars: {type: mongoose.Schema.ObjectId, ref:['Star'], required: true},
-    genres: {type: mongoose.Schema.ObjectId, ref:['Genre'], required: true},
+    stars: [{type: mongoose.Schema.ObjectId, ref:'Star', required: true}],
+    genres: [{type: mongoose.Schema.ObjectId, ref:'Genre', required: true}],
     overview: {type: String, required: true},
     status: {type: String, required: true},
     poster: {type: String, required: true},
@@ -19,5 +19,8 @@ const movieSchema = new Schema ({
     updatedAt: {type: Date},
     apiID: {type: String, required: true, select: false}
 });
+
+
+movieSchema.set('toJSON', { getters: true });
 
 export default mongoose.model('Movie', movieSchema);
