@@ -17,6 +17,7 @@ describe('User', ()=> {
     it('should create and save new user', (done) => {
         const user = new User({
             name: 'Obi-Wan Kenobi',
+            username: 'ObiWan',
             email: 'deathstar@gmail.com',
             password: '1234',
             activated: true,
@@ -40,6 +41,7 @@ describe('User', ()=> {
     it('should give error when same user is wanted to create', (done) => {
         const user = new User({
             name: 'Obi-Wan Kenobi',
+            username: 'ObiWan',
             email: 'deathstar@gmail.com',
             password: '1234',
             activated: true,
