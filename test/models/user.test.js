@@ -38,11 +38,26 @@ describe('User', ()=> {
         });
     });
 
-    it('should give error when same user is wanted to create', (done) => {
+    it('should give error when same email is wanted to use', (done) => {
         const user = new User({
-            name: 'Obi-Wan Kenobi',
-            username: 'ObiWan',
+            name: 'Jon Snow',
+            username: 'stark',
             email: 'deathstar@gmail.com',
+            password: '1234',
+            activated: true,
+            apiID: '1'
+        });
+        user.save((error) => {
+            assert.notEqual(error, null);
+            done();
+        });
+    });
+
+    it('should give error when same username is wanted to use', (done) => {
+        const user = new User({
+            name: 'Jon Snow',
+            username: 'ObiWan',
+            email: 'stark@gmail.com',
             password: '1234',
             activated: true,
             apiID: '1'

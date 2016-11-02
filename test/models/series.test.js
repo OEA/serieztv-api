@@ -12,14 +12,14 @@ import mongoose from 'mongoose';
 mongoose.Promise = bluebird;
 
 const star1 = new Star({
-    name: 'Daisy Ridley',
+    name: 'Kit Harrington',
     image: 'image',
     active: true,
     apiID: '1'
 });
 
 const star2 = new Star({
-    name: 'Tom Hanks',
+    name: 'Emilia Clark',
     image: 'image',
     active: true,
     apiID: '1'
@@ -27,7 +27,7 @@ const star2 = new Star({
 
 
 const genre = new Genre({
-    name: 'Comedy',
+    name: 'Drama',
     apiID: '1'
 });
 
@@ -69,9 +69,17 @@ describe('Series', ()=> {
     it('should return stars of the series', (done) => {
         Series.find({}).populate([{path: 'stars'}, {path: 'genres'}]).exec((error, seriesArray) => {
             const series = seriesArray[0];
-            assert.equal(series.stars[0].name, 'Daisy Ridley');
+            assert.equal(series.stars[0].name, 'Kit Harrington');
+            assert.equal(series.stars[1].name, 'Emilia Clark');
             done();
         });
     });
 
+    it('should return genres of the series', (done) => {
+        Series.find({}).populate([{path: 'stars'}, {path: 'genres'}]).exec((error, seriesArray) => {
+            const series = seriesArray[0];
+            assert.equal(series.genres[0].name, 'Drama');
+            done();
+        });
+    });
 });

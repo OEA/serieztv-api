@@ -9,3 +9,6 @@ import './genre.test';
 import './star.test';
 import './comment.test';
 import './series.test';
+import './season.test';
+import './episode.test';
+import './movie.test';
