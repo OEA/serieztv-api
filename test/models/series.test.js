@@ -31,14 +31,10 @@ const genre = new Genre({
     apiID: '1'
 });
 
-
-const stars = Array(star1._id, star2._id);
-const genres = Array(genre._id);
 const date = new Date();
 
 describe('Series', ()=> {
     before((done) => {
-        console.log('starss: ' + stars);
         star1.save();
         star2.save();
         genre.save();
@@ -50,8 +46,8 @@ describe('Series', ()=> {
     it('should create and save new series', (done) => {
         const series = new Series({
             name: 'Game of Thrones',
-            stars: stars._id,
-            genres: genres._id,
+            stars: [star1._id,star2._id],
+            genres: [genre._id],
             overview: 'Series about throne, dragons, whitewalkers.',
             status: 'status',
             poster: 'poster',
@@ -63,7 +59,6 @@ describe('Series', ()=> {
             active: true,
             apiID: '1'
         });
-        console.log(series);
         series.save((error) => {
             if (error) done(error);
             else done();
@@ -72,19 +67,11 @@ describe('Series', ()=> {
     });
 
     it('should return stars of the series', (done) => {
-        Series.find({}).populate('stars').exec((error, series) => {
-            const serie = series[0];
-            console.log(series.stars);
-            assert.equal(serie.stars.name, 'Daisy Ridley');
+        Series.find({}).populate([{path: 'stars'}, {path: 'genres'}]).exec((error, seriesArray) => {
+            const series = seriesArray[0];
+            assert.equal(series.stars[0].name, 'Daisy Ridley');
             done();
         });
     });
 
-    /*it('should return created character that is Rey', (done) => {
-        Character.find({characterName: 'Rey'}).limit(1).exec((error, characters)=> {
-            const character = characters[0];
-            assert.equal(character.characterName, 'Rey');
-            done();
-        });
-    });*/
 });
