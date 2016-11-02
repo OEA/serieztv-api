@@ -17,7 +17,7 @@ const star = new Star({
     apiID: '1'
 });
 
-star.save();
+
 
 describe('Character', ()=> {
     before((done) => {
@@ -25,7 +25,7 @@ describe('Character', ()=> {
             done();
         });
     });
-
+    star.save();
     it('should create and save new character', (done) => {
         const character = new Character({
             star: star._id,
@@ -43,6 +43,7 @@ describe('Character', ()=> {
     it('should return star name of the character', (done) => {
         Character.find({}).populate('star').exec((error, characters) => {
             const character = characters[0];
+            console.log("character" + character);
             assert.equal(character.star.name, 'Daisy Ridley');
             done();
         });
