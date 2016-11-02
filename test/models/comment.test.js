@@ -16,6 +16,7 @@ mongoose.Promise = bluebird;
 
 const user = new User({
     name: 'Rhegar Targaryen',
+    username: 'dragon',
     email: 'dragonsa@gmail.com',
     password: '1234',
     activated: true,
@@ -37,13 +38,10 @@ const genre = new Genre({
 
 var date = new Date();
 
-const stars = [star];
-const genres = [genre];
-
 const series = new Series({
     name: 'Game of Thrones',
-    stars: stars._id,
-    genres: genres._id,
+    stars: [star._id],
+    genres: [genre._id],
     overview: 'Series about throne, dragons, whitewalkers.',
     status: 'status',
     poster: 'poster',
@@ -59,8 +57,8 @@ const series = new Series({
 
 const movie = new Movie({
     name: 'Star Wars',
-    stars: stars._id,
-    genres: genres._id,
+    stars: [star._id],
+    genres: [genre._id],
     overview: 'Movie about space.',
     status: 'status',
     poster: 'poster',
@@ -109,15 +107,4 @@ describe('Comment', ()=> {
         });
 
     });
-
-    /*it('should return first comment is about Game of Thrones', (done) => {
-        Comment.find({}).populate('object').exec((error, comments)=> {
-            series.save();
-            const comment = comments[0];
-            console.log('series is: ' + series);
-            console.log('comment third ' +  comment);
-            assert.equal(comment.object.name, 'Game of Thrones');
-            done();
-        });
-    });*/
 });
