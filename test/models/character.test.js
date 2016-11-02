@@ -43,7 +43,6 @@ describe('Character', ()=> {
     it('should return star name of the character', (done) => {
         Character.find({}).populate('star').exec((error, characters) => {
             const character = characters[0];
-            console.log("character" + character);
             assert.equal(character.star.name, 'Daisy Ridley');
             done();
         });
