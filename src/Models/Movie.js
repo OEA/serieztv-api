@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
-import Star from 'Star'
-import Genre from 'Genre'
+
 
 var Schema = mongoose.Schema;
 
