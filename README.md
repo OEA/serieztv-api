@@ -4,10 +4,13 @@ API for serieztv mobile app
 ## Structure
 
 - src
+    - apps
+        - api
+        - `api.js`
     - models
-    - views
-    - controllers
+    - services
     - `app.js`
+- test
  
 ## Requirements
 
