@@ -91,15 +91,6 @@ class Login {
         return true;
     }
 
-    static checkPassword(email, password) {
-        User.find({email:email}).limit(1).exec((error, users)=> {
-            if (users[0].password == password) {
-                return true;
-            }
-        });
-        return false;
-    }
-
     static login(email, password) {
 
         return new Promise((resolve, reject) => {
@@ -107,7 +98,7 @@ class Login {
                 if (error || users.length < 1) {
                     reject(Messages.USER_NOT_EXIST);
                 } else {
-                    if (this.checkPassword(users[0].email, password)) {
+                    if (users[0].password == password) {
                         resolve(users[0]);
                     } else {
                         reject(Messages.WRONG_PASSWORD);
