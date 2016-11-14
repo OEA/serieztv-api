@@ -7,10 +7,6 @@ import Promise from 'bluebird';
 
 Promise.promisifyAll(mongoose);
 
-Promise.config({
-    cancellation: true
-});
-
 const Messages = {
     NOT_UNIQUE_EMAIL: "Email is not unique",
     NOT_UNIQUE_USERNAME: "Username is not unique",
@@ -19,76 +15,42 @@ const Messages = {
     USER_NOT_EXIST: "User does not exist",
 };
 
-
 class Login {
 
     static register(name, username, email, password, activated, apiID) {
 
         return new Promise((resolve, reject) => {
-            if (!this.checkUniqueEmail(email)) {
-                reject(this.NotUniqueEmail());
 
-            }  else if (!this.checkUniqueUsername(username)) {
-                reject(this.NotUniqueUsername());
+            User.find({email:email}).count((error, count)=> {
+                if (count > 0 || error) {
+                    reject(Messages.NOT_UNIQUE_EMAIL);
+                }
+            });
 
-            } else {
-                const user = new User({
-                    name: name,
-                    username: username,
-                    email: email,
-                    password: password,
-                    activated: activated,
-                    apiID: apiID
-                });
 
-                user.save( (error) => {
-                    if (error) {
-                        reject(this.CannotCreateUser());
+            User.find({username:username}).count((error, count)=> {
+                if (count > 0 || error) {
+                    reject(Messages.NOT_UNIQUE_USERNAME);
+                }
+            });
 
-                    } else {
-                        resolve(user);
-                    }
-                });
-            }
+            const user = new User({
+                name: name,
+                username: username,
+                email: email,
+                password: password,
+                activated: activated,
+                apiID: apiID
+            });
+
+            user.save( (error) => {
+                if (error) {
+                    reject(Messages.CANNOT_CREATE_USER);
+                } else {
+                    resolve(user);
+                }
+            });
         });
-    }
-
-    static WrongPasswordError() {
-        this.name = "Wrong Password";
-    }
-
-
-
-    static NotUniqueEmail() {
-    return "Email is not unique";
-    }
-
-
-    static NotUniqueUsername() {
-    return "Username is not unique";
-}
-
-
-    static CannotCreateUser() {
-    return "Cannot create user";
-}
-
-
-
-
-    static checkUniqueEmail(email) {
-        User.find({email:email}).limit(1).exec((error, users)=> {
-            return false;
-        });
-        return true;
-    }
-
-    static checkUniqueUsername(username) {
-
-        User.find({username:username}).limit(1).exec((error, users)=> {
-            return false;
-        });
-        return true;
     }
 
     static login(email, password) {
@@ -105,14 +67,8 @@ class Login {
                     }
                 }
             });
-
         });
-
     }
-
-
 }
-
-
 
 export default Login;
