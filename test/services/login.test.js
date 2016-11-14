@@ -34,17 +34,12 @@ describe('Login', ()=> {
                 console.log(result);
              })
 
-            .catch(Login.CannotCreateUser, (error) => {
-                console.log("err " + error);
-                assert.equal(error, "Cannot create user");
-                done();
-            })
-            .catch(Login.NotUniqueEmail, (error) => {
+            .catch((error) => {
 
                 console.log("err " + error);
                 assert.equal(error, "Email is not unique");
                 done();
-            });
+            })
 
     });
 
@@ -54,28 +49,23 @@ describe('Login', ()=> {
 
 
             })
-            .catch(Login.CannotCreateUser, (error) => {
-                console.log("err " + error);
-                assert.equal(error, "Cannot create user");
-                done();
-            })
-            .catch(Login.NotUniqueUsername, (error) => {
+            .catch((error) => {
 
                 console.log("err " + error);
                 assert.equal(error, "Username is not unique");
                 done();
-            });
+            })
     });
 
     it('should fail the registration for missing argument', (done) => {
-        Login.register("John Doe", "jd", "johndoe@gmail.com", "jdrocks", "1")
+        Login.register("John Doe", "jad", "johndoe@gmail.com", "jdrocks", "1")
             .then( (result) => {
 
 
             })
-            .catch(Login.CannotCreateUser, (error) => {
+            .catch((error) => {
                 console.log("err " + error);
-                assert.equal(error, "Cannot create user");
+                assert.equal(error, "Could not create user");
                 done();
             })
     });
