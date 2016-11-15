@@ -18,7 +18,15 @@ describe('Login', ()=> {
     });
 
     it('should register new user to the system', (done) => {
-        Login.register("John Doe", "jd", "jdoe@gmail.com", "jdrocks", false, "1")
+        const user = new User({
+            name: "John Doe",
+            username: "jd",
+            email: "jdoe@gmail.com",
+            password: "jdrocks",
+            activated: false,
+            apiID: "1"
+        });
+        Login.register(user)
             .then( (result) => {
             console.log(result);
             assert.equal(result.name, "John Doe");
@@ -28,7 +36,16 @@ describe('Login', ()=> {
     });
 
     it('should fail the registration for not unique email', (done) => {
-        Login.register("Jane Doe", "jad", "jdoe@gmail.com", "jdrocks", false, "1")
+        const user = new User({
+            name: "Jane Doe",
+            username: "jad",
+            email: "jdoe@gmail.com",
+            password: "jdrocks",
+            activated: false,
+            apiID: "1"
+        });
+
+        Login.register(user)
             .then( (result) => {
 
                 console.log(result);
@@ -44,7 +61,15 @@ describe('Login', ()=> {
     });
 
     it('should fail the registration for not unique username', (done) => {
-        Login.register("Jane Doe", "jd", "jadoe@gmail.com", "jdrocks", false, "1")
+        const user = new User({
+            name: "Jane Doe",
+            username: "jd",
+            email: "jadoe@gmail.com",
+            password: "jdrocks",
+            activated: false,
+            apiID: "1"
+        });
+        Login.register(user)
             .then( (result) => {
 
 
@@ -58,7 +83,14 @@ describe('Login', ()=> {
     });
 
     it('should fail the registration for missing argument', (done) => {
-        Login.register("John Doe", "jad", "johndoe@gmail.com", "jdrocks", "1")
+        const user = new User({
+            name: "John Doe",
+            username: "jad",
+            email: "johndoe@gmail.com",
+            password: "jdrocks",
+            apiID: "1"
+        });
+        Login.register(user)
             .then( (result) => {
 
 

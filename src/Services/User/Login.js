@@ -17,30 +17,21 @@ const Messages = {
 
 class Login {
 
-    static register(name, username, email, password, activated, apiID) {
+    static register(user) {
 
         return new Promise((resolve, reject) => {
 
-            User.find({email:email}).count((error, count)=> {
+            User.find({email:user.email}).count((error, count)=> {
                 if (count > 0 || error) {
                     reject(Messages.NOT_UNIQUE_EMAIL);
                 }
             });
 
 
-            User.find({username:username}).count((error, count)=> {
+            User.find({username:user.username}).count((error, count)=> {
                 if (count > 0 || error) {
                     reject(Messages.NOT_UNIQUE_USERNAME);
                 }
-            });
-
-            const user = new User({
-                name: name,
-                username: username,
-                email: email,
-                password: password,
-                activated: activated,
-                apiID: apiID
             });
 
             user.save( (error) => {
