@@ -3,3 +3,4 @@
  */
 
 import './login.test.js';
+import './genre.test.js';
