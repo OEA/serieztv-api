@@ -39,10 +39,23 @@ describe('Genre', ()=> {
             .then((result) => {
 
             }).catch((error) => {
-                console.log(result);
                 assert.equal(error, "Genre already exists");
                 done();
             });
+    });
+
+
+    it('should not create genre that has missing argument', (done) => {
+        const genre = new Genre({
+            name: 'Horror',
+        });
+        GenreService.create(genre)
+            .then((result) => {
+
+            }).catch((error) => {
+            assert.equal(error, "Could not create genre");
+            done();
+        });
     });
 
     it('should search and return for genre', (done) => {
@@ -53,14 +66,14 @@ describe('Genre', ()=> {
         GenreService.search(genre.name)
             .then((result) => {
                 console.log(result);
-                assert.equal(result, genre);
+                assert.equal(result.name, 'Comedy');
                 done();
             });
     });
 
     it('should search and not return for nonexistent genre', (done) => {
         const genre = new Genre({
-            name: 'Comedy',
+            name: 'Drama',
             apiID: '1'
         });
         GenreService.search(genre.name)
@@ -83,14 +96,13 @@ describe('Genre', ()=> {
             .then((result) => {
                 console.log(result);
                 assert.equal(result.name, "Comedy");
-                assert.equal(result.apiID, "1");
                 done();
             });
     });
 
     it('should not delete nonexistent genre', (done) => {
         const genre = new Genre({
-            name: 'Comedy',
+            name: 'Thriller',
             apiID: '1'
         });
         GenreService.delete(genre.name)
