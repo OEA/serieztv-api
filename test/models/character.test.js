@@ -5,19 +5,10 @@
 import Character from '../../src/Models/Character';
 import Star from '../../src/Models/Star';
 import bluebird from 'bluebird';
-import assert from 'assert';
+import { expect } from 'chai';
 import mongoose from 'mongoose';
 
 mongoose.Promise = bluebird;
-
-const star = new Star({
-    name: 'Daisy Ridley',
-    image: 'image',
-    active: true,
-    apiID: '1'
-});
-
-
 
 describe('Character', ()=> {
     before((done) => {
@@ -25,35 +16,32 @@ describe('Character', ()=> {
             done();
         });
     });
-    star.save();
     it('should create and save new character', (done) => {
-        const character = new Character({
-            star: star._id,
-            characterName: 'Rey',
-            characterImage: 'image',
-            apiID: '1'
-        });
-        character.save((error) => {
-            if (error) done(error);
-            else done();
-        });
-
+        Star.findOne({name: 'Emilia Clark'})
+            .then((emiliaClark) => {
+                const character = new Character({
+                    star: emiliaClark._id,
+                    characterName: 'Daenerys Targaryen',
+                    characterImage: 'image',
+                    apiID: '1'
+                });
+                return Promise.resolve(character);
+            })
+            .then((character) => {
+                character.save((error) => {
+                    if (error) done(error);
+                    else done();
+                });
+            });
     });
 
-    it('should return star name of the character', (done) => {
-        Character.find({}).populate('star').exec((error, characters) => {
-            const character = characters[0];
-            assert.equal(character.star.name, 'Daisy Ridley');
+    it('should check star name and character name', (done) => {
+        Character.findOne({characterName: 'Daenerys Targaryen'}).populate('star').exec((error, daenerysTargaryen) => {
+            expect(daenerysTargaryen).not.to.be.null;
+            expect(daenerysTargaryen.characterName).to.be.equal('Daenerys Targaryen');
+            expect(daenerysTargaryen.star.name).to.be.equal('Emilia Clark');
             done();
         });
 
-    });
-
-    it('should return created character that is Rey', (done) => {
-        Character.find({characterName: 'Rey'}).limit(1).exec((error, characters)=> {
-            const character = characters[0];
-            assert.equal(character.characterName, 'Rey');
-            done();
-        });
     });
 });
