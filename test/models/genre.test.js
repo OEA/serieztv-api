@@ -2,12 +2,23 @@
  * Created by gbu on 01/11/2016.
  */
 
-import assert from 'assert';
+import { expect } from 'chai';
 import mongoose from 'mongoose';
 import Genre from '../../src/Models/Genre';
 import bluebird from 'bluebird';
 
 mongoose.Promise = bluebird;
+
+const drama = new Genre({
+    name: 'Drama',
+    apiID: '1'
+});
+
+const comedy = new Genre({
+    name: 'Comedy',
+    apiID: '2'
+});
+
 describe('Genre', ()=> {
     before((done) => {
         Genre.remove({}).then(()=> {
@@ -15,22 +26,17 @@ describe('Genre', ()=> {
         });
     });
 
-    it('should create and save new genre', (done) => {
-        const genre = new Genre({
-            name: 'Comedy',
-            apiID: '1'
+    it('should create and save new genres', (done) => {
+        Promise.all([drama.save(), comedy.save()]).then(() => {
+            done();
         });
-        genre.save((error) => {
-            if (error) done(error);
-            else done();
-        });
-
     });
 
     it('should return created genre that is Comedy', (done) => {
-        Genre.find({name: 'Comedy'}).limit(1).exec((error, genres)=> {
-            const genre = genres[0];
-            assert.equal(genre.name, 'Comedy');
+        Genre.findOne({name: 'Comedy'}).limit(1).exec((error, comedy)=> {
+            expect(error).to.be.null;
+            expect(comedy).not.to.be.null;
+            expect(comedy.name).equal('Comedy');
             done();
         });
     });
