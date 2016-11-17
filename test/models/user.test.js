@@ -7,6 +7,16 @@ import bluebird from 'bluebird';
 import { expect } from 'chai';
 
 mongoose.Promise = bluebird;
+
+const ObiWanKenobi = new User({
+    name: 'Obi-Wan Kenobi',
+    username: 'ObiWan',
+    email: 'deathstar@gmail.com',
+    password: '1234',
+    activated: true,
+    apiID: '1'
+});
+
 describe('User', ()=> {
     before((done) => {
         User.remove({}).then(()=> {
@@ -15,15 +25,7 @@ describe('User', ()=> {
     });
 
     it('should create and save new user', (done) => {
-        const user = new User({
-            name: 'Obi-Wan Kenobi',
-            username: 'ObiWan',
-            email: 'deathstar@gmail.com',
-            password: '1234',
-            activated: true,
-            apiID: '1'
-        });
-        user.save((error) => {
+        ObiWanKenobi.save((error) => {
             if (error) done(error);
             else done();
         });
