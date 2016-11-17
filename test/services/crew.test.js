@@ -27,7 +27,6 @@ describe('Crew', ()=> {
         });
         CrewService.create(crew)
             .then((result) => {
-                console.log(result);
                 assert.equal(result.name, "George Lucas");
                 done();
             });
@@ -57,29 +56,30 @@ describe('Crew', ()=> {
             department: 'Producing',
             apiID: '1'
         });
-        CrewService.create(crewSecond);
-        CrewService.searchBy('name', crewSecond.name)
-            .then((result) => {
-                console.log(result);
-                assert.equal(result[0].job, 'Producer');
-                done();
+        CrewService.create(crewSecond)
+            .then((res) => {
+                CrewService.searchByName(crewSecond.name)
+                    .then((result) => {
+                        assert.equal(result[0].job, 'Producer');
+                        done();
+                    });
             });
+
     });
 
 
     it('should search crew by name and return job of second crew with that name', (done) => {
-        const crewFirst = new Crew({
+        const crewFirstAbraham = new Crew({
             name: 'JJ Abraham',
             image: 'image',
             job: 'Writer',
             department: 'Writing',
             apiID: '1'
         });
-        CrewService.create(crewFirst);
-        CrewService.searchBy('name', 'JJ Abraham')
+        CrewService.create(crewFirstAbraham);
+        CrewService.searchByName('JJ Abraham')
             .then((result) => {
-                console.log(result);
-                assert.equal(result[1].job, 'Producer');
+                assert.equal(result[1].job, 'Writer');
                 done();
             });
     });
@@ -93,15 +93,14 @@ describe('Crew', ()=> {
             apiID: '1'
         });
         CrewService.create(crewThird);
-        CrewService.searchBy('job', 'Producer')
+        CrewService.searchByJob('Producer')
             .then((result) => {
-                console.log(result);
                 assert.equal(result[1].name, 'Steven Spielberg');
                 done();
             });
     });
 
-    it('should search crew by job and return list of crew with that job', (done) => {
+    it('should search crew by job and return names of crew with that job', (done) => {
         const crewSecond = new Crew({
             name: 'JJ Abraham',
             image: 'image',
@@ -116,41 +115,15 @@ describe('Crew', ()=> {
             department: 'Producing',
             apiID: '1'
         });
-        const list = [crewSecond, crewThird];
         CrewService.create(crewSecond);
-        CrewService.searchBy('job', 'Producer')
+        CrewService.searchByJob('Producer')
             .then((result) => {
-                console.log(result);
-                assert.equal(result, list);
+                assert.equal(result[0].name, crewSecond.name);
+                assert.equal(result[1].name, crewThird.name);
                 done();
             });
     });
 
-
-
-    it('should search crew by department and return list of crew in that department', (done) => {
-        const crewSecond = new Crew({
-            name: 'JJ Abraham',
-            image: 'image',
-            job: 'Producer',
-            department: 'Producing',
-            apiID: '1'
-        });
-        const crewThird = new Crew({
-            name: 'Steven Spielberg',
-            image: 'image',
-            job: 'Producer',
-            department: 'Producing',
-            apiID: '1'
-        });
-        const list = [crewSecond, crewThird];
-        CrewService.searchBy('department', 'Producing')
-            .then((result) => {
-                console.log(result);
-                assert.equal(result, list);
-                done();
-            });
-    });
 
     it('should search by name and not return for nonexistent crew', (done) => {
         const crew = new Crew({
@@ -160,7 +133,7 @@ describe('Crew', ()=> {
             department: 'Directing',
             apiID: '1'
         });
-        CrewService.searchBy('name', crew.name)
+        CrewService.searchByName(crew.name)
             .then((result) => {
 
             }).catch((error) => {
@@ -177,7 +150,7 @@ describe('Crew', ()=> {
             department: 'Acting',
             apiID: '1'
         });
-        CrewService.search(crew.job)
+        CrewService.searchByJob(crew.job)
             .then((result) => {
 
             }).catch((error) => {
@@ -196,7 +169,6 @@ describe('Crew', ()=> {
         });
         CrewService.delete(crew.name)
             .then((result) => {
-                console.log(result);
                 assert.equal(result.name, "George Lucas");
                 done();
             });
