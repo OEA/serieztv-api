@@ -11,90 +11,66 @@ import { expect } from 'chai';
 
 mongoose.Promise = bluebird;
 
-const KitHarrington = new Star({
-    name: 'Kit Harrington',
-    image: 'image',
-    active: true,
-    apiID: '1'
-});
 
-const EmiliaClark = new Star({
-    name: 'Emilia Clark',
-    image: 'image',
-    active: true,
-    apiID: '2'
-});
-
-const SeanBean = new Star({
-    name: 'Sean Bean',
-    image: 'image',
-    active: true,
-    apiID: '3'
-});
-
-
-const drama = new Genre({
-    name: 'Drama',
-    apiID: '1'
-});
-
-const comedy = new Genre({
-    name: 'Comedy',
-    apiID: '2'
-});
-
-const date = new Date();
-
-const gameOfThrones = new Series({
-    name: 'Game of Thrones',
-    stars: [KitHarrington._id, EmiliaClark._id, SeanBean._id],
-    genres: [drama._id],
-    overview: 'Series about throne, dragons, whitewalkers.',
-    status: 'status',
-    poster: 'poster',
-    image: 'image',
-    imdbScore: 1000,
-    imdbRating: 9.3,
-    runtime: 50,
-    firstAir: date,
-    active: true,
-    apiID: '1'
-});
-
-const wasted = new Series({
-    name: 'Wasted',
-    stars: [SeanBean._id],
-    genres: [comedy._id],
-    overview: 'Surreal slacker comedy set in a West Country village...',
-    status: 'status',
-    poster: 'poster',
-    image: 'image',
-    imdbScore: 1000,
-    imdbRating: 9.3,
-    runtime: 50,
-    firstAir: date,
-    active: true,
-    apiID: '1'
-});
 
 
 
 describe('Series', ()=> {
     before((done) => {
-        star1.save();
-        star2.save();
-        star3.save();
-        drama.save();
-        comedy.save();
         Series.remove({}).then(()=> {
             done();
         });
     });
 
     it('should create and save new series', (done) => {
-        Promise.all([gameOfThrones.save(), wasted.save()]).then(()=>{
-            done();
+
+        Star.find({name: {$in : ['Kit Harrington', 'Emilia Clark', 'Sean Bean']}}, (error, stars) => {
+            return Promise.resolve(stars);
+        }).then((stars) => {
+            const gameOfThrones = new Series({
+                name: 'Game of Thrones',
+                stars: [stars[0]._id, stars[1]._id, stars[2]._id],
+                overview: 'Series about throne, dragons, whitewalkers.',
+                status: 'status',
+                poster: 'poster',
+                image: 'image',
+                imdbScore: 1000,
+                imdbRating: 9.3,
+                runtime: 50,
+                firstAir: new Date(),
+                active: true,
+                apiID: '1'
+            });
+
+            const wasted = new Series({
+                name: 'Wasted',
+                stars: [stars[2]._id],
+                overview: 'Surreal slacker comedy set in a West Country village...',
+                status: 'status',
+                poster: 'poster',
+                image: 'image',
+                imdbScore: 1000,
+                imdbRating: 9.3,
+                runtime: 50,
+                firstAir: new Date,
+                active: true,
+                apiID: '1'
+            });
+
+            return Promise.resolve([gameOfThrones, wasted]);
+        }).then((seriesArray) => {
+            Genre.find({name: {$in : ['Drama' , 'Comedy']}}, (error, genres) => {
+               const drama = genres[0];
+               const comedy = genres[1];
+               seriesArray[0].set('genres', [drama._id]);
+               seriesArray[1].set('genres', [comedy._id]);
+               Promise.all([seriesArray[0].save(), seriesArray[1].save()]).then(() => {
+                   done();
+               });
+            });
         });
+
+
     });
 
     it('should return stars of the series', (done) => {
