@@ -17,15 +17,57 @@ const CrewErrorMessages = {
 class CrewService {
 
     static create(crew) {
-
+        return new Promise((resolve, reject) => {
+            crew.save((error) => {
+                if (error) {
+                    reject(CrewErrorMessages.CANNOT_CREATE_CREW);
+                } else {
+                    resolve(crew);
+                }
+            });
+        });
     }
 
     static delete(crewName, crewJob) {
 
     }
 
-    static searchBy(parameter, value) {
+    static searchByName(value) {
+        return new Promise((resolve, reject) => {
+            Crew.find({name:value}).count((error, count) => {
+                if (count == 0 || error) {
+                    reject(CrewErrorMessages.CREW_NOT_EXIST);
+                }
+            }).then((count) => {
+                Crew.find({name: value}, (error, crews) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        resolve(crews);
+                    }
+                });
+            });
 
+        });
+    }
+
+    static searchByJob(value) {
+        return new Promise((resolve, reject) => {
+            Crew.find({job:value}).count((error, count) => {
+                if (count == 0 || error) {
+                    reject(CrewErrorMessages.CREW_NOT_EXIST);
+                }
+            }).then((count) => {
+                Crew.find({job: value}, (error, crews) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        resolve(crews);
+                    }
+                });
+            });
+
+        });
     }
 
 }
