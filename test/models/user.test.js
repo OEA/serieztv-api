@@ -1,10 +1,10 @@
 /**
  * Created by omeremreaslan on 30/10/2016.
  */
-import assert from 'assert';
 import mongoose from 'mongoose';
 import User from '../../src/Models/User';
 import bluebird from 'bluebird';
+import { expect } from 'chai';
 
 mongoose.Promise = bluebird;
 describe('User', ()=> {
@@ -31,9 +31,8 @@ describe('User', ()=> {
     });
 
     it('should return created user that is Obi-Wan Kenobi', (done) => {
-        User.find({name: 'Obi-Wan Kenobi'}).limit(1).exec((error, users)=> {
-            const user = users[0];
-            assert.equal(user.name, 'Obi-Wan Kenobi');
+        User.findOne({name: 'Obi-Wan Kenobi'}).limit(1).exec((error, obiWan)=> {
+            expect(obiWan.name).to.be.equal('Obi-Wan Kenobi');
             done();
         });
     });
@@ -48,7 +47,7 @@ describe('User', ()=> {
             apiID: '1'
         });
         user.save((error) => {
-            assert.notEqual(error, null);
+            expect(error).not.to.be.null;
             done();
         });
     });
@@ -63,7 +62,7 @@ describe('User', ()=> {
             apiID: '1'
         });
         user.save((error) => {
-            assert.notEqual(error, null);
+            expect(error).not.to.be.null;
             done();
         });
     });
