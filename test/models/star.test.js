@@ -57,6 +57,7 @@ describe('Star', ()=> {
 
     it('should return created star that is Mark Hamill', (done) => {
         Star.findOne({name: 'Mark Hamill'}).limit(1).exec((error, markHamill)=> {
+            expect(error).to.be.null;
             expect(markHamill).not.to.be.null;
             expect(markHamill.name).to.be.equal('Mark Hamill');
             done();

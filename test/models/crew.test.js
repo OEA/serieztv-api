@@ -32,6 +32,7 @@ describe('Crew', ()=> {
 
     it('should return created crew that is George Lucas', (done) => {
         Crew.findOne({name: 'George Lucas'}).limit(1).exec((error, georgeLucas)=> {
+            expect(error).to.be.null;
             expect(georgeLucas).not.to.be.null;
             expect(georgeLucas.name).to.be.equal('George Lucas');
             done();

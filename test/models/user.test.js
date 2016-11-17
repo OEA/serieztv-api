@@ -34,6 +34,7 @@ describe('User', ()=> {
 
     it('should return created user that is Obi-Wan Kenobi', (done) => {
         User.findOne({name: 'Obi-Wan Kenobi'}).limit(1).exec((error, obiWan)=> {
+            expect(error).to.be.null;
             expect(obiWan.name).to.be.equal('Obi-Wan Kenobi');
             done();
         });

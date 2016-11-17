@@ -37,6 +37,7 @@ describe('Character', ()=> {
 
     it('should check star name and character name', (done) => {
         Character.findOne({characterName: 'Daenerys Targaryen'}).populate('star').exec((error, daenerysTargaryen) => {
+            expect(error).to.be.null;
             expect(daenerysTargaryen).not.to.be.null;
             expect(daenerysTargaryen.characterName).to.be.equal('Daenerys Targaryen');
             expect(daenerysTargaryen.star.name).to.be.equal('Emilia Clark');
