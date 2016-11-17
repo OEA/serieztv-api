@@ -60,7 +60,6 @@ class GenreService {
                }
            }).then((test) => {
                Genre.findOneAndRemove({name: genreName}, (error, genre) => {
-                   console.log("test");
                    if (error) {
                        console.log(error);
                    } else {

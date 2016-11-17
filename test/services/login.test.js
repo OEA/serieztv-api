@@ -28,7 +28,6 @@ describe('Login', ()=> {
         });
         Login.register(user)
             .then( (result) => {
-            console.log(result);
             assert.equal(result.name, "John Doe");
             done();
         });
@@ -48,12 +47,8 @@ describe('Login', ()=> {
         Login.register(user)
             .then( (result) => {
 
-                console.log(result);
              })
-
             .catch((error) => {
-
-                console.log("err " + error);
                 assert.equal(error, "Email is not unique");
                 done();
             })
@@ -75,8 +70,6 @@ describe('Login', ()=> {
 
             })
             .catch((error) => {
-
-                console.log("err " + error);
                 assert.equal(error, "Username is not unique");
                 done();
             })
@@ -96,7 +89,6 @@ describe('Login', ()=> {
 
             })
             .catch((error) => {
-                console.log("err " + error);
                 assert.equal(error, "Could not create user");
                 done();
             })
@@ -105,7 +97,6 @@ describe('Login', ()=> {
     it('should login to the system', (done) => {
         Login.login("jdoe@gmail.com", "jdrocks")
             .then( (result) => {
-                console.log(result);
                 assert.equal(result.name, "John Doe");
                 done();
             });
@@ -118,7 +109,6 @@ describe('Login', ()=> {
 
             })
             .catch( (error) => {
-                console.log("err " + error);
                 assert.equal(error, "Wrong Password");
                 done();
             });
@@ -131,7 +121,6 @@ describe('Login', ()=> {
 
             })
             .catch( (error) => {
-                console.log("err " + error);
                 assert.equal(error, "User does not exist");
                 done();
             });

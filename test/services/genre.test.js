@@ -24,7 +24,6 @@ describe('Genre', ()=> {
         });
         GenreService.create(genre)
             .then((result) => {
-                console.log(result);
                 assert.equal(result.name, "Comedy");
                 done();
             });
@@ -65,7 +64,6 @@ describe('Genre', ()=> {
         });
         GenreService.search(genre.name)
             .then((result) => {
-                console.log(result);
                 assert.equal(result.name, 'Comedy');
                 done();
             });
@@ -94,7 +92,6 @@ describe('Genre', ()=> {
         });
         GenreService.delete(genre.name)
             .then((result) => {
-                console.log(result);
                 assert.equal(result.name, "Comedy");
                 done();
             });
