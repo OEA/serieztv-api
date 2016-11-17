@@ -4,7 +4,7 @@
 
 import Crew from '../../src/Models/Crew';
 import bluebird from 'bluebird';
-import assert from 'assert';
+import { expect } from 'chai';
 import mongoose from 'mongoose';
 
 mongoose.Promise = bluebird;
@@ -31,9 +31,9 @@ describe('Crew', ()=> {
     });
 
     it('should return created crew that is George Lucas', (done) => {
-        Crew.find({name: 'George Lucas'}).limit(1).exec((error, crews)=> {
-            const crew = crews[0];
-            assert.equal(crew.name, 'George Lucas');
+        Crew.findOne({name: 'George Lucas'}).limit(1).exec((error, georgeLucas)=> {
+            expect(georgeLucas).not.to.be.null;
+            expect(georgeLucas.name).to.be.equal('George Lucas');
             done();
         });
     });
