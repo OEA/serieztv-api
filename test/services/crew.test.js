@@ -9,7 +9,7 @@ import bluebird from 'bluebird';
 
 bluebird.promisifyAll(mongoose);
 
-describe('Crew', ()=> {
+describe('CrewService', ()=> {
 
     before((done) => {
         Crew.remove({}).then(()=> {
@@ -167,11 +167,15 @@ describe('Crew', ()=> {
             department: 'Directing',
             apiID: '1'
         });
-        CrewService.delete(crew.name)
-            .then((result) => {
-                assert.equal(result.name, "George Lucas");
-                done();
+        CrewService.create(crew)
+            .then((test) => {
+                CrewService.delete(crew._id)
+                    .then((result) => {
+                        assert.equal(result.name, "George Lucas");
+                        done();
+                    });
             });
+
     });
 
     it('should not delete nonexistent crew', (done) => {
@@ -182,7 +186,7 @@ describe('Crew', ()=> {
             department: 'Directing',
             apiID: '1'
         });
-        CrewService.delete(crew.name)
+        CrewService.delete(crew._id)
             .then((result) => {
 
             }).catch((error) => {
