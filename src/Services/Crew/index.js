@@ -28,8 +28,23 @@ class CrewService {
         });
     }
 
-    static delete(crewName, crewJob) {
+    static delete(id) {
+        return new Promise((resolve, reject) => {
+            Crew.find({_id:id}).count((error, count) => {
+                if (count == 0 || error) {
+                    reject(CrewErrorMessages.CREW_NOT_EXIST);
+                }
+            }).then((test) => {
+                Crew.findOneAndRemove({_id: id}, (error, crew) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        resolve(crew);
+                    }
+                });
+            });
 
+        });
     }
 
     static searchByName(value) {
