@@ -89,7 +89,7 @@ describe('CharacterService', ()=> {
             });
     });
 
-    it('should search by name and not return for nonexistent star', (done) => {
+    it('should search by name and not return for nonexistent character', (done) => {
         const character = new Character({
             star: star._id,
             characterName: 'Harrison Ford',
@@ -105,38 +105,7 @@ describe('CharacterService', ()=> {
         });
     });
 
-    it('should delete the character', (done) => {
-        const character = new Character({
-            star: star._id,
-            characterName: 'Jack Ryan',
-            characterImage: 'characterImage',
-            apiID: '1'
-        });
-        CharacterService.create(character)
-            .then((test) => {
-                CharacterService.delete(character._id)
-                    .then((result) => {
-                        assert.equal(result.characterName, "Jack Ryan");
-                        done();
-                    });
-            });
-    });
 
-    it('should not delete nonexistent character', (done) => {
-        const character = new Character({
-            star: star._id,
-            characterName: 'Harrison Ford',
-            characterImage: 'characterImage',
-            apiID: '1'
-        });
-        CharacterService.delete(character._id)
-            .then((result) => {
-
-            }).catch((error) => {
-                assert.equal(error, "Character does not exist");
-                done();
-        });
-    });
 
     it('should find star name of the character', (done) => {
         const character = new Character({
@@ -157,21 +126,56 @@ describe('CharacterService', ()=> {
 
     });
 
-   it('should not find star of nonexistent character', (done) => {
+    it('should not find star of nonexistent character', (done) => {
 
-       const character = new Character({
-           star: star._id,
-           characterName: 'Harrison Ford',
-           characterImage: 'characterImage',
-           apiID: '1'
-       });
-       CharacterService.findStar(character)
-           .then((result) => {
+        const character = new Character({
+            star: star._id,
+            characterName: 'Harrison Ford',
+            characterImage: 'characterImage',
+            apiID: '1'
+        });
+        CharacterService.findStar(character)
+            .then((result) => {
 
-           }).catch((error) => {
-                assert.equal(error, "Character does not exist");
-                done();
+            }).catch((error) => {
+            assert.equal(error, "Character does not exist");
+            done();
+        });
+    });
+
+    it('should not delete nonexistent character', (done) => {
+        const character = new Character({
+            star: star._id,
+            characterName: 'Harrison Ford',
+            characterImage: 'characterImage',
+            apiID: '1'
+        });
+        CharacterService.delete(character._id)
+            .then((result) => {
+
+            }).catch((error) => {
+            assert.equal(error, "Character does not exist");
+            done();
+        });
+    });
+
+    it('should delete the character', (done) => {
+        const character = new Character({
+            star: star._id,
+            characterName: 'Jack Ryan',
+            characterImage: 'characterImage',
+            apiID: '1'
+        });
+        CharacterService.create(character)
+            .then((created) => {
+                console.log('created char' + created);
+                CharacterService.delete(created._id)
+                    .then((result) => {
+                        console.log('result char' + result);
+                        assert.equal(result.characterName, "Jack Ryan");
+                        done();
+                    });
             });
-   });
+    });
 
 });

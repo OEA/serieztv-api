@@ -77,7 +77,6 @@ class CharacterService {
                     if (error) {
                         reject(error);
                     } else {
-                        console.log('characterstarinmethod' + characterStar);
                         resolve(characterStar.star);
                     }
                 });
