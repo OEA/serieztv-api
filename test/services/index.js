@@ -7,4 +7,5 @@ import './genre.test.js';
 import './crew.test.js';
 import './star.test.js';
 import './character.test.js';
+import './series.test.js';
 import './movie.test.js';
