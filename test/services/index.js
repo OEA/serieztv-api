@@ -6,4 +6,5 @@ import './login.test.js';
 import './genre.test.js';
 import './crew.test.js';
 import './star.test.js';
-import './character.test.js'
+import './character.test.js';
+import './movie.test.js';
