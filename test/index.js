@@ -4,3 +4,4 @@
 
 import './mongodb.test';
 import './models/';
+import './services/';
