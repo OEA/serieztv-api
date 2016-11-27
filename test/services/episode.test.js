@@ -204,7 +204,7 @@ describe('EpisodeService', ()=> {
                 var episode = founded[0];
                 EpisodeService.findCrewOf(episode)
                     .then((result) => {
-                        assert.equal(result[0].name, 'Beau Willimon');
+                        assert.equal(result.crew[0].name, 'Beau Willimon');
                         done();
                     });
             });
@@ -236,7 +236,7 @@ describe('EpisodeService', ()=> {
                 var episode = founded[0];
                 EpisodeService.findGuestStarsOf(episode)
                     .then((result) => {
-                        assert.equal(result[0].name, 'Kristen Connolly');
+                        assert.equal(result.guestStars[0].name, 'Kristen Connolly');
                         done();
                     });
             });

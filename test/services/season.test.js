@@ -147,7 +147,7 @@ describe('SeasonService', ()=> {
                 var season = founded[0];
                 SeasonService.findSeriesOf(season)
                     .then((result) => {
-                        assert.equal(result.overview, 'Series about president of the USA.');
+                        assert.equal(result.series.overview, 'Series about president of the USA.');
                         done();
                     });
             });

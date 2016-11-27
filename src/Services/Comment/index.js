@@ -77,7 +77,7 @@ class CommentService {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(founded.user);
+                        resolve(founded);
                     }
                 });
             });

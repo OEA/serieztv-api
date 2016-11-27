@@ -94,7 +94,7 @@ class EpisodeService {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(episodes.crew);
+                        resolve(episodes);
                     }
                 });
             });
@@ -112,7 +112,7 @@ class EpisodeService {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(episodes.guestStars);
+                        resolve(episodes);
                     }
                 });
             });

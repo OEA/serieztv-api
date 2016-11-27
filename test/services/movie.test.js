@@ -163,8 +163,8 @@ describe('MovieService', ()=> {
             .then( (created) => {
                 MovieService.findStarsOf(created)
                     .then((result) => {
-                        assert.equal(result[0].name, 'Daisy Ridley');
-                        assert.equal(result[1].name, 'Mark Hamill');
+                        assert.equal(result.stars[0].name, 'Daisy Ridley');
+                        assert.equal(result.stars[1].name, 'Mark Hamill');
                         done();
                     });
             });
@@ -189,8 +189,8 @@ describe('MovieService', ()=> {
             .then( (created) => {
                 MovieService.findGenresOf(created)
                     .then((genreResult) => {
-                        assert.equal(genreResult[0].name, 'Adventure');
-                        assert.equal(genreResult[1].name, 'Fantastic');
+                        assert.equal(genreResult.genres[0].name, 'Adventure');
+                        assert.equal(genreResult.genres[1].name, 'Fantastic');
                         done();
                     });
             });

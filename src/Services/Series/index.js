@@ -76,7 +76,7 @@ class SeriesService {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(seriesStars.stars);
+                        resolve(seriesStars);
                     }
                 });
             });
@@ -94,7 +94,7 @@ class SeriesService {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(seriesGenres.genres);
+                        resolve(seriesGenres);
                     }
                 });
             });

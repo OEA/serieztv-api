@@ -114,8 +114,8 @@ describe('CommentService', ()=> {
         CommentService.create(comment)
             .then((created) => {
                 CommentService.findOwnerOfComment(created)
-                    .then((user) => {
-                        assert.equal(user.username, 'ObiWan');
+                    .then((result) => {
+                        assert.equal(result.user.username, 'ObiWan');
                         done();
                     })
             });
@@ -150,6 +150,7 @@ describe('CommentService', ()=> {
             .then( (created) => {
                 CommentService.findTypeOfComment(created)
                     .then((result) => {
+                        console.log(result);
                         assert.equal(result.type.name, 'House of Cards');
                         done();
                     });

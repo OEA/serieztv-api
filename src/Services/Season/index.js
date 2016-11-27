@@ -77,7 +77,7 @@ class SeasonService {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(seasonSeries.series);
+                        resolve(seasonSeries);
                     }
                 });
             });

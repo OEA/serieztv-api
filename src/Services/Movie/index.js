@@ -76,7 +76,7 @@ class MovieService {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(movieStars.stars);
+                        resolve(movieStars);
                     }
                 });
             });
@@ -94,7 +94,7 @@ class MovieService {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(movieGenres.genres);
+                        resolve(movieGenres);
                     }
                 });
             });

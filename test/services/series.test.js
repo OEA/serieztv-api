@@ -167,8 +167,8 @@ describe('SeriesService', ()=> {
             .then( (created) => {
                 SeriesService.findStarsOf(created)
                     .then((result) => {
-                        assert.equal(result[0].name, 'Kevin Spacey');
-                        assert.equal(result[1].name, 'Robin Wright');
+                        assert.equal(result.stars[0].name, 'Kevin Spacey');
+                        assert.equal(result.stars[1].name, 'Robin Wright');
                         done();
                     });
             });
@@ -194,8 +194,8 @@ describe('SeriesService', ()=> {
             .then( (created) => {
                 SeriesService.findGenresOf(created)
                     .then((genreResult) => {
-                        assert.equal(genreResult[0].name, 'Drama');
-                        assert.equal(genreResult[1].name, 'Action');
+                        assert.equal(genreResult.genres[0].name, 'Drama');
+                        assert.equal(genreResult.genres[1].name, 'Action');
                         done();
                     });
             });
