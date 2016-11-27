@@ -121,11 +121,11 @@ class SeriesService {
 
     static findSeriesOf(star) {
         return new Promise((resolve, reject) => {
-            Series.find({stars: {$in: [star._id]}}).populate([{path: 'stars'}]).exec((error, series) => {
+            Series.find({stars: {$in: [star._id]}}).populate([{path: 'stars'}]).exec((error, seriesList) => {
                 if (error) {
                     reject(error);
                 } else {
-                    resolve(series);
+                    resolve(seriesList);
                 }
             });
         });
