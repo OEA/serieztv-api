@@ -9,3 +9,6 @@ import './star.test.js';
 import './character.test.js';
 import './series.test.js';
 import './movie.test.js';
+import './season.test.js';
+import './episode.test.js';
+import './comment.test.js';
