@@ -3,9 +3,9 @@
  */
 import mongoose from 'mongoose';
 import User from '../../Models/User';
-import Promise from 'bluebird';
+import bluebird from 'bluebird';
 
-Promise.promisifyAll(mongoose);
+mongoose.promise = bluebird;
 
 const Messages = {
     NOT_UNIQUE_EMAIL: "Email is not unique",
