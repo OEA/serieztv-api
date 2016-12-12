@@ -1,7 +1,24 @@
-import http from 'http';
-http.createServer((req, res) => {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end('Hello world\n');
-}).listen(3000);
+import express from 'express';
+import vhost from 'vhost';
+import bluebird from 'bluebird';
+import mongoose from 'mongoose';
 
-console.log('Server running at 3000 port');
+
+let app = express();
+app.enable('trust proxy');
+
+mongoose.connect('mongodb://localhost/serieztv');
+mongoose.promise = bluebird;
+
+let db = mongoose.connection;
+
+db.afterOpen = function (next) {
+    db.once('open', next);
+};
+
+app.db = db;
+let api = require('./Api/api').app;
+
+//app.use(express.errorHandler(config.get('errorHandler')));
+
+module.exports = app;
