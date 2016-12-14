@@ -11,9 +11,8 @@ const userSchema = new Schema ({
     forgotten: {type: Boolean, select: false},
     apiID: {type: String, required: true, select: false},
     createdAt: {type: Date},
-    updatedAt: {type: Date}
+    updatedAt: {type: Date},
+    __v: {type: Number, select: false},
 });
-
-userSchema.set('toJSON', { getters: true });
 
 export default mongoose.model('User', userSchema);
