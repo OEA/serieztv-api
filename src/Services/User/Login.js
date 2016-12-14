@@ -45,19 +45,22 @@ class Login {
     }
 
     static login(email, password) {
-
         return new Promise((resolve, reject) => {
-            User.find({email:email}).limit(1).exec((error, users)=> {
-                if (error || users.length < 1) {
-                    reject(Messages.USER_NOT_EXIST);
-                } else {
-                    if (users[0].password == password) {
-                        resolve(users[0]);
-                    } else {
-                        reject(Messages.WRONG_PASSWORD);
+            User.count({$or : [{email:email}, {username: email}]})
+                .exec((error, count) => {
+                    if (error || count < 1) {
+                        reject(Messages.USER_NOT_EXIST);
                     }
-                }
-            });
+                })
+                .then(() => {
+                    User.find({$or : [{email:email}, {username: email}], password: password}, {password: 0}).limit(1).exec((error, users)=> {
+                        if (error || users.length < 1) {
+                            reject(Messages.WRONG_PASSWORD);
+                        } else {
+                            resolve(users[0]);
+                        }
+                    });
+                });
         });
     }
 }
