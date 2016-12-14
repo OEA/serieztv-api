@@ -9,7 +9,7 @@ const userSchema = new Schema ({
     activated: {type: Boolean, required: true},
     activation: {type: Boolean, select: false},
     forgotten: {type: Boolean, select: false},
-    apiID: {type: String, required: true, select: false},
+    apiID: {type: String, select: false},
     createdAt: {type: Date},
     updatedAt: {type: Date},
     __v: {type: Number, select: false},
