@@ -25,22 +25,24 @@ class Login {
                 if (count > 0 || error) {
                     reject(Messages.NOT_UNIQUE_EMAIL);
                 }
-            });
-
-
-            User.find({username:user.username}).count((error, count)=> {
-                if (count > 0 || error) {
-                    reject(Messages.NOT_UNIQUE_USERNAME);
-                }
-            });
-
-            user.save( (error) => {
-                if (error) {
-                    reject(Messages.CANNOT_CREATE_USER);
-                } else {
-                    resolve(user);
-                }
-            });
+            })
+                .then(() => {
+                    User.find({username:user.username}).count((error, count)=> {
+                        if (count > 0 || error) {
+                            reject(Messages.NOT_UNIQUE_USERNAME);
+                        }
+                    });
+                })
+                .then(() => {
+                    user.save( (error) => {
+                        console.log(error);
+                        if (error) {
+                            reject(Messages.CANNOT_CREATE_USER);
+                        } else {
+                            resolve(user);
+                        }
+                    });
+                });
         });
     }
 
