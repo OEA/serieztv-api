@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 const starSchema = new Schema ({
     name: {type: String, required: true},
-    image: {type: String, required: true},
+    image: {type: String},
     birthday: {type: Date},
     createdAt: {type: Date},
     updatedAt: {type: Date},
