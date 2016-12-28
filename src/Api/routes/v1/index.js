@@ -11,7 +11,7 @@ module.exports = function (app) {
 
     app.get('/v1/test', (req, res) => {
         let tmdb = new TMDB();
-        tmdb.getFilmName("205596", (movie) => {
+        tmdb.getFilmName(req.query.tmdbID, (movie) => {
             res.json(movie);
         }, (error) => {
             res.json(error);
