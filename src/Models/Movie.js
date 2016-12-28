@@ -18,7 +18,7 @@ const movieSchema = new Schema ({
     airDate: {type: Date, required: true},
     createdAt: {type: Date},
     updatedAt: {type: Date},
-    apiID: {type: String, required: true, select: false}
+    apiID: {type: String, required: true, unique: true}
 });
 
 
