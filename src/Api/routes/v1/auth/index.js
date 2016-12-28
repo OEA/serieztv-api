@@ -6,7 +6,7 @@ import User from '../../../../Models/User';
 
 module.exports = function (app) {
     app.post('/v1/auth/login', (req, res) => {
-        let username = req.body.username.toLowerCase();
+        let username = req.body.username;
         let password = req.body.password;
 
         Login.login(username, password)
