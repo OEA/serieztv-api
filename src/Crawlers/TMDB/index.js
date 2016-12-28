@@ -5,31 +5,30 @@
 import config from './config.json';
 import request from 'request';
 import Promise from 'bluebird';
+import fileStream from 'fs';
 import Movie from '../../Models/Movie';
 import Genre from '../../Models/Genre';
 import Character from '../../Models/Character';
 import Star from '../../Models/Star';
 import StarService from '../../Services/Star';
+import MovieService from '../../Services/Movie';
+import OMDBCrawler from '../OMDB';
 
 class TMDBCrawler {
     constructor() {
         this.apiKey = config.apiKey;
-        this.baseUrl = config.baseUrl;
-        this.imageUrl = config.imageUrl;
+        this.baseUrl = config.url.baseUrl;
+        this.movieUrl = this.baseUrl + "movie/";
+        this.imageUrl = config.image.baseUrl;
+        this.backDropSizes = config.image.backdropSizes;
+        this.posterSizes = config.image.posterSizes;
         this.movie = new Movie({});
     }
 
     getFilmName(id, success, fail) {
         request
-            .get({url: "https://api.themoviedb.org/3/movie/" + id, form: {api_key: this.apiKey}}, (error, response, body) => {
+            .get({url: this.movieUrl + id, form: {api_key: this.apiKey}}, (error, response, body) => {
 
-                /*const movie = new Movie({
-                    poster: 'poster_path',
-                    image: 'backdrop_path',
-                    imdbScore: 1000,
-                    imdbRating: 9.5,
-                    apiID: '1'
-                });*/
                 let bodyJson = JSON.parse(body);
                 this.movie.set('name', bodyJson.original_title);
                 this.movie.set('overview', bodyJson.overview);
@@ -52,34 +51,61 @@ class TMDBCrawler {
                     })
                     .then((credits) => {
                         let creditsObject = this.getCastFromMovieCreditsBody(credits);
-                        return Promise.all(creditsObject.characters)
-                            .then((characters) => {
-                                //console.log(characters);
-                                return Promise.all(creditsObject.stars);
+                        return Promise.all(creditsObject.stars)
+                            .then((stars) => {
+                                return Promise.all(creditsObject.characters);
                             });
 
                     })
-                    .then((stars) => {
-                        const starIds = [];
-                        for (let star of stars) {
-                            starIds.push(star._id);
+                    .then((characters) => {
+                        const characterIds = [];
+                        for (let character of characters) {
+                            characterIds.push(character._id);
                         }
-                        this.movie.set('stars', starIds);
-                        console.log(this.movie);
-                        success({success: true});
+                        this.movie.set('characters', characterIds);
+                    })
+                    .then(() => {
+
+                        const omdbCrawler = new OMDBCrawler();
+                        omdbCrawler.searchById(this.movie.imdbID)
+                            .then((json) => {
+                                const jsonBody = JSON.parse(json);
+                                this.movie.set('imdbRating', Number.parseFloat(jsonBody.imdbRating));
+                                this.movie.set('imdbScore', Number.parseFloat(jsonBody.imdbVotes.replace(/,/g , "")));
+                                MovieService.create(this.movie)
+                                    .then((movie) => {
+                                        success({success: true, movie: movie});
+                                    })
+                                    .then(() => {
+
+                                        for (var i = 0; i<this.posterSizes.length; i++) {
+                                            this.downloadImageOfMovie(this.imageUrl + this.posterSizes[i] + bodyJson.poster_path, 'images/poster/' + this.posterSizes[i] + '/' + this.movie._id + '.jpg');
+                                        }
+                                        for (var i = 0; i<this.backDropSizes.length; i++) {
+                                            this.downloadImageOfMovie(this.imageUrl + this.backDropSizes[i] + bodyJson.backdrop_path, 'images/backdrop/' + this.backDropSizes[i] + '/' + this.movie._id + '.jpg');
+                                        }
+
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                        fail(error);
+                                    });
+                            });
+
+
                     })
                     .catch((error) => {
-
                         console.log(error);
                         fail(error);
                     })
+
             });
     }
 
     //returns promise
     getCreditsFromMovieId(movieId) {
         return new Promise((resolve, reject) => {
-            request.get({url: "https://api.themoviedb.org/3/movie/"+movieId+"/credits", form: {api_key: this.apiKey}}, (error, response, body) => {
+            request.get({url: this.movieUrl + movieId + "/credits", form: {api_key: this.apiKey}}, (error, response, body) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -97,9 +123,21 @@ class TMDBCrawler {
                 name: genreValue.name,
                 apiID: genreValue.id
             });
-            genreArray.push(genre.save());
+            genreArray.push(this.findGenreOrCreate(genre));
         }
         return genreArray;
+    }
+
+    findGenreOrCreate(genre) {
+        return new Promise((resolve, reject) => {
+            Genre.findOne({name: genre.name}, (err, doc) => {
+                if (doc == null) {
+                    resolve(genre.save());
+                } else {
+                    resolve(doc);
+                }
+            });
+        });
     }
 
     getCastFromMovieCreditsBody(creditsBody) {
@@ -113,16 +151,60 @@ class TMDBCrawler {
                 active: true,
                 apiID: castValue.id
             });
-            starArray.push(star.save());
             const character = new Character({
-                star: star._id,
-                characterName: castValue.character,
+                characterName: (castValue.character) ? castValue.character : "Untitled",
                 characterImage: castValue.profile_path,
                 apiID: castValue.credit_id
             });
-            characterArray.push(character.save());
+            starArray.push(this.findStarOrCreate(star, character));
+            characterArray.push(this.findStarAndSaveCharacter(star, character));
         }
         return {stars: starArray, characters: characterArray};
+    }
+
+    findStarOrCreate(star) {
+        return new Promise((resolve, reject) => {
+            Star.findOne({name: star.name}, (err, doc) => {
+                if (doc == null) {
+                    for (var i = 0; i<this.backDropSizes.length; i++) {
+                        this.downloadImageOfMovie(this.imageUrl + this.backDropSizes[i] + star.image, 'images/backdrop/' + this.backDropSizes[i] + '/' + star._id + '.jpg');
+                    }
+                    resolve(star.save());
+                } else {
+                    resolve(doc);
+                }
+            });
+        });
+    }
+
+    findStarAndSaveCharacter(star, character) {
+        return new Promise((resolve, reject) => {
+            Star.findOne({name: star.name, apiID: star.apiID}, (err, doc) => {
+                if (doc == null) {
+                    character.set('star', star._id);
+                    resolve(character.save());
+                } else {
+                    character.set('star', doc._id);
+                    resolve(character.save());
+                }
+            });
+        });
+    }
+
+    downloadImageOfMovie(url, filename) {
+        request.head(url, (err, res, body) => {
+
+            if (fileStream.existsSync(filename)) {
+                // Do something
+                fileStream.unlink(filename);
+
+                request(url).pipe(fileStream.createWriteStream(filename)).on('close');
+            } else {
+
+                request.get(url).pipe(fileStream.createWriteStream(filename));
+                //request(url)
+            }
+        });
     }
 
 
