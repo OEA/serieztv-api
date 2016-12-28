@@ -1,0 +1,7 @@
+{
+  "apiName": "OMDB API",
+  "version": "1",
+  "url" : {
+    "baseUrl": "http://www.omdbapi.com/"
+  }
+}
