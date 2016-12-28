@@ -1,0 +1,7 @@
+{
+  "apiName": "TMDB API",
+  "version": "1",
+  "apiKey": "6c25857474cec385c2121e4e72f79604",
+  "baseUrl": "https://api.themoviedb.org/3/",
+  "imageUrl": "https://image.tmdb.org/t/p/"
+}
