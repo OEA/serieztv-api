@@ -8,7 +8,7 @@ const starSchema = new Schema ({
     createdAt: {type: Date},
     updatedAt: {type: Date},
     active: {type: Boolean, required: true},
-    apiID: {type: String, required: true, select: false}
+    apiID: {type: String, required: true, unique: true, select: false}
 });
 
 starSchema.set('toJSON', { getters: true });
