@@ -25,16 +25,17 @@
     "express": "^4.14.0",
     "express-json": "^1.0.0",
     "mongoose": "^4.6.4",
+    "request": "^2.79.0",
     "response-time": "^2.3.2",
     "vhost": "^3.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-preset-es2015": "^6.16.0",
-    "nodemon": "^1.11.0",
     "chai": "^3.5.0",
     "chai-http": "^2.0.1",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "nodemon": "^1.11.0"
   },
   "engines": {
     "node": "^6.9.1"
