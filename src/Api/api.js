@@ -6,6 +6,7 @@ import express from 'express';
 import json from 'express-json';
 import responseTime from 'response-time';
 import bodyParser from 'body-parser';
+import path from 'path';
 
 let app = express();
 app.set('view engine', 'html');
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 
 require('../Api/routes')(app);
 
+app.use('/images', express.static(path.join(__dirname, '/../../images')));
 app.listen(3000);
 /*
 app.locals({
