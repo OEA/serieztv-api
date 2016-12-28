@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 
 const movieSchema = new Schema ({
     name: {type: String, required: true},
-    stars: [{type: mongoose.Schema.ObjectId, ref:'Star', required: true}],
+    characters: [{type: mongoose.Schema.ObjectId, ref:'Character', required: true}],
     genres: [{type: mongoose.Schema.ObjectId, ref:'Genre', required: true}],
     overview: {type: String, required: true},
     status: {type: String, required: true},
