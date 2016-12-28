@@ -130,6 +130,22 @@ class MovieService {
             });
         });
     }
+
+    static getMovies() {
+        return new Promise((resolve, reject) => {
+            Movie.find().populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
+
+                Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, moviesArray) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(moviesArray);
+                    }
+                });
+
+            });
+        });
+    }
 }
 
 export default MovieService;
