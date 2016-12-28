@@ -36,7 +36,7 @@ class MovieService {
             }).then((res) => {
                 Movie.findOneAndRemove({_id: id}, (error, movie) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(movie);
                     }
@@ -55,7 +55,7 @@ class MovieService {
             }).then((count) => {
                 Movie.find({name: value}, (error, movies) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(movies);
                     }

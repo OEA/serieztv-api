@@ -37,7 +37,7 @@ class SeasonService {
             }).then((res) => {
                 Season.findOneAndRemove({_id: id}, (error, season) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(season);
                     }

@@ -36,7 +36,7 @@ class SeriesService {
             }).then((res) => {
                 Series.findOneAndRemove({_id: id}, (error, series) => {
                     if (error) {
-                        console.log(error);
+                        
                     } else {
                         resolve(series);
                     }

@@ -42,7 +42,7 @@ class GenreService {
             }).then((count) => {
                 Genre.find({name: genreName}, (error, genres) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(genres[0]);
                     }
@@ -61,7 +61,7 @@ class GenreService {
            }).then((test) => {
                Genre.findOneAndRemove({name: genreName}, (error, genre) => {
                    if (error) {
-                       console.log(error);
+
                    } else {
                        resolve(genre);
                    }

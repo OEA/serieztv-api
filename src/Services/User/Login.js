@@ -35,7 +35,6 @@ class Login {
                 })
                 .then(() => {
                     user.save( (error) => {
-                        console.log(error);
                         if (error) {
                             reject(Messages.CANNOT_CREATE_USER);
                         } else {
@@ -55,7 +54,8 @@ class Login {
                     }
                 })
                 .then(() => {
-                    User.find({$or : [{email:email}, {username: email}], password: password}, {password: 0}).limit(1).exec((error, users)=> {
+                    User.find({$or : [{email:email}, {username: email}], password: password}, {password: 0}).limit(1)
+                        .exec((error, users)=> {
                         if (error || users.length < 1) {
                             reject(Messages.WRONG_PASSWORD);
                         } else {

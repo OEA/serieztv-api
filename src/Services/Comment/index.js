@@ -36,7 +36,7 @@ class CommentService {
             }).then((res) => {
                 Comment.findOneAndRemove({_id: id}, (error, comment) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(comment);
                     }

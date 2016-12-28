@@ -37,7 +37,7 @@ class CharacterService {
             }).then((res) => {
                 Character.findOneAndRemove({_id: id}, (error, character) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(character);
                     }
@@ -56,7 +56,7 @@ class CharacterService {
             }).then((count) => {
                 Character.find({characterName: value}, (error, characters) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(characters);
                     }

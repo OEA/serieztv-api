@@ -37,7 +37,7 @@ class CrewService {
             }).then((test) => {
                 Crew.findOneAndRemove({_id: id}, (error, crew) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(crew);
                     }
@@ -56,7 +56,7 @@ class CrewService {
             }).then((count) => {
                 Crew.find({name: value}, (error, crews) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(crews);
                     }
@@ -75,7 +75,7 @@ class CrewService {
             }).then((count) => {
                 Crew.find({job: value}, (error, crews) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(crews);
                     }

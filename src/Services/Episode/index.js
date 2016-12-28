@@ -36,7 +36,7 @@ class EpisodeService {
             }).then((res) => {
                 Episode.findOneAndRemove({_id: id}, (error, episode) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(episode);
                     }

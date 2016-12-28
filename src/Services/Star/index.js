@@ -37,7 +37,7 @@ class StarService {
             }).then((test) => {
                 Star.findOneAndRemove({_id: id}, (error, star) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(star);
                     }
@@ -56,7 +56,7 @@ class StarService {
             }).then((count) => {
                 Star.find({name: value}, (error, stars) => {
                     if (error) {
-                        console.log(error);
+
                     } else {
                         resolve(stars);
                     }
