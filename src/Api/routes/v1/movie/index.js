@@ -71,7 +71,13 @@ module.exports = function (app) {
                     resp.json({error: error});
                 })
         } else if (name) {
-
+            MovieService.getMovieFromName(name)
+                .then((movies) => {
+                    resp.json(movies);
+                })
+                .catch((error) => {
+                    resp.json({error: error});
+                })
         } else {
             resp.json({error: "Specify the search."});
         }

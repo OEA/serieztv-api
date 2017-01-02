@@ -10,10 +10,8 @@ module.exports = function (app) {
                 Promise.map(genres, (genre) => {
                     return MovieService.getMovieFromGenreId([genre._id])
                         .then((movies) => {
-                            const genreJson = {};
-                            genreJson.genre = genre;
-                            genreJson.test = "sda";
-                            genreList.push(genreJson);
+                            genreList.push(genre);
+
                         })
                 }).then(() => {
                     console.log("bitis");

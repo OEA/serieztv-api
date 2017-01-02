@@ -236,6 +236,22 @@ class MovieService {
             });
         }
     }
+    static getMovieFromName(name) {
+
+        var searchKey = new RegExp(name, 'i')
+        return new Promise((resolve, reject) => {
+            Movie.find({ name: searchKey}).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
+                Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, movies) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(movies);
+                    }
+                });
+
+            });
+        });
+    }
 }
 
 export default MovieService;
