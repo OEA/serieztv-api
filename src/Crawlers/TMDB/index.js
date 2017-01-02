@@ -19,6 +19,7 @@ class TMDBCrawler {
         this.apiKey = config.apiKey;
         this.baseUrl = config.url.baseUrl;
         this.movieUrl = this.baseUrl + "movie/";
+        this.personUrl = this.baseUrl + "person/";
         this.imageUrl = config.image.baseUrl;
         this.backDropSizes = config.image.backdropSizes;
         this.posterSizes = config.image.posterSizes;
@@ -162,14 +163,51 @@ class TMDBCrawler {
         return {stars: starArray, characters: characterArray};
     }
 
+    seriesPromise(promiseArr) {
+        return Promise.reduce(promiseArr, (values, promise) => {
+            return promise().then((result) => {
+                values.push(result);
+                return values;
+            });
+        }, []);
+    }
+
     findStarOrCreate(star) {
         return new Promise((resolve, reject) => {
             Star.findOne({name: star.name}, (err, doc) => {
                 if (doc == null) {
-                    for (var i = 0; i<this.backDropSizes.length; i++) {
-                        this.downloadImageOfMovie(this.imageUrl + this.backDropSizes[i] + star.image, 'images/backdrop/' + this.backDropSizes[i] + '/' + star._id + '.jpg');
+                    if (star.image) {
+                        for (var i = 0; i<this.backDropSizes.length; i++) {
+                            this.downloadImageOfMovie(this.imageUrl + this.backDropSizes[i] + star.image, 'images/backdrop/' + this.backDropSizes[i] + '/' + star._id + '.jpg');
+                        }
                     }
+
+                    /*return Promise.map(stars, (star) => {
+
+                     setTimeout(() => {
+                     return request.get({url: this.personUrl + star.apiID, qs: {api_key: this.apiKey}}, (error, response, body) => {
+                     const bodyJson = JSON.parse(body);
+                     console.log(body)
+                     //star.set('biography', bodyJson.biography);
+                     //star.set('birthday', bodyJson.birthday);
+
+                     });
+
+                     }, 1000);
+                     })
+
+                    return new Promise((resolveInside, rejectInside) => {
+                        return request.get({url: this.personUrl + star.apiID, qs: {api_key: this.apiKey}}, (error, response, body) => {
+                            const bodyJson = JSON.parse(body);
+                            console.log(body)
+                            star.set('biography', bodyJson.biography);
+                            star.set('birthday', bodyJson.birthday);
+
+                        });
+                    })*/
+
                     resolve(star.save());
+
                 } else {
                     resolve(doc);
                 }
@@ -192,19 +230,13 @@ class TMDBCrawler {
     }
 
     downloadImageOfMovie(url, filename) {
-        request.head(url, (err, res, body) => {
 
-            if (fileStream.existsSync(filename)) {
-                // Do something
-                fileStream.unlink(filename);
+        console.log(url);
 
-                request(url).pipe(fileStream.createWriteStream(filename)).on('close');
-            } else {
-
-                request.get(url).pipe(fileStream.createWriteStream(filename));
-                //request(url)
-            }
+        request(url, {encoding: 'binary'}, function(error, response, body) {
+            fileStream.writeFile(filename, body, 'binary', function (err) {});
         });
+
     }
 
 
