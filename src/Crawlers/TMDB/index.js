@@ -182,6 +182,8 @@ class TMDBCrawler {
                         omdbCrawler.searchByName(this.series.name)
                             .then((json) => {
                                 const jsonBody = JSON.parse(json);
+                                console.log(jsonBody);
+                                console.log(this.series.name);
                                 this.series.set('imdbID',jsonBody.imdbID);
                                 this.series.set('imdbRating', Number.parseFloat(jsonBody.imdbRating));
                                 this.series.set('imdbScore', Number.parseFloat(jsonBody.imdbVotes.replace(/,/g , "")));

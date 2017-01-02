@@ -33,7 +33,6 @@ class OMDBCrawler {
             //plot => full | short
             //r => json | xml
             request.get({url: this.baseUrl , qs: {t: title, plot: "full", r: "json"}}, (error, response, body) => {
-                console.log(response.url);
                 if (error) {
                     reject(error);
                 } else {

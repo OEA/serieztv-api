@@ -252,6 +252,21 @@ class SeriesService {
             });
         });
     }
+
+    static search(query) {
+        return new Promise((resolve, reject) => {
+            Series.find({ name: searchKey}).populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
+                Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, series) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(series);
+                    }
+                });
+
+            });
+        });
+    }
 }
 
 export default SeriesService;

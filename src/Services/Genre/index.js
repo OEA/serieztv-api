@@ -38,7 +38,7 @@ class GenreService {
             var searchKey = new RegExp(genreName, 'i')
             Genre.find({name:searchKey}).count((error, count) => {
                 if (count == 0 || error) {
-                    reject(GenreErrorMessages.GENRE_NOT_EXIST);
+                    //reject(GenreErrorMessages.GENRE_NOT_EXIST);
                 }
             }).then((count) => {
                 Genre.find({name: searchKey}, (error, genres) => {
