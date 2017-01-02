@@ -3,6 +3,7 @@
  */
 import mongoose from 'mongoose';
 import Movie from '../../Models/Movie.js';
+import GenreService from '../Genre';
 import Promise from 'bluebird';
 
 Promise.promisifyAll(mongoose);
@@ -145,6 +146,76 @@ class MovieService {
 
             });
         });
+    }
+
+    static getTopImdbMovies(limit = 10) {
+        return new Promise((resolve, reject) => {
+            Movie.find().limit(limit).sort({'imdbRating': -1}).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
+                Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, moviesArray) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(moviesArray);
+                    }
+                });
+
+            });
+        });
+    }
+    static getRecentMovies(limit = 10) {
+        return new Promise((resolve, reject) => {
+            Movie.find().limit(limit).sort({'airDate': -1}).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
+                Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, moviesArray) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(moviesArray);
+                    }
+                });
+
+            });
+        });
+    }
+
+    static getMovieFromId(id = null) {
+        if (id) {
+            return new Promise((resolve, reject) => {
+                Movie.findOne({_id: id}).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movie) => {
+                    Movie.populate(movie, {path: 'characters.star', model: 'Star'}, (err, movie) => {
+                        if (err) {
+                            reject(error);
+                        } else {
+                            resolve(movie);
+                        }
+                    });
+
+                });
+            });
+        }
+    }
+
+    static getMovieFromGenre(genre = null) {
+        if (genre) {
+            return new Promise((resolve, reject) => {
+                GenreService.search(genre)
+                    .then((genreObj) => {
+                        Movie.find({ genres: { "$in" : [genreObj._id]} }).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
+                            Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, movies) => {
+                                if (err) {
+                                    reject(error);
+                                } else {
+                                    resolve(movies);
+                                }
+                            });
+
+                        });
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    })
+
+            });
+        }
     }
 }
 
