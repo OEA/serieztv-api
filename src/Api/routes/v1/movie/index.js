@@ -1,9 +1,7 @@
 /**
  * Created by omer on 28/12/2016.
  */
-
 import MovieService from '../../../../Services/Movie';
-import Promise from 'bluebird';
 
 module.exports = function (app) {
     app.get('/v1/movie/list', (req, resp) => {
