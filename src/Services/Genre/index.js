@@ -35,16 +35,17 @@ class GenreService {
 
     static search(genreName) {
         return new Promise((resolve, reject) => {
-            Genre.find({name:genreName}).count((error, count) => {
+            var searchKey = new RegExp(genreName, 'i')
+            Genre.find({name:searchKey}).count((error, count) => {
                 if (count == 0 || error) {
                     reject(GenreErrorMessages.GENRE_NOT_EXIST);
                 }
             }).then((count) => {
-                Genre.find({name: genreName}, (error, genres) => {
+                Genre.find({name: searchKey}, (error, genres) => {
                     if (error) {
 
                     } else {
-                        resolve(genres[0]);
+                        resolve(genres);
                     }
                 });
             });
@@ -70,6 +71,18 @@ class GenreService {
 
         });
 
+    }
+
+    static getList() {
+        return new Promise((resolve, reject) => {
+            Genre.find().exec((error, genres) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(genres);
+                }
+            });
+        });
     }
 }
 

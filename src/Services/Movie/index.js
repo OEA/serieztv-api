@@ -198,22 +198,41 @@ class MovieService {
         if (genre) {
             return new Promise((resolve, reject) => {
                 GenreService.search(genre)
-                    .then((genreObj) => {
-                        Movie.find({ genres: { "$in" : [genreObj._id]} }).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
-                            Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, movies) => {
-                                if (err) {
-                                    reject(error);
-                                } else {
-                                    resolve(movies);
-                                }
-                            });
+                    .then((genresObj) => {
 
+                    let genreIds = [];
+                    for (let genreObj of genresObj) {
+                        genreIds.push(genreObj._id);
+                    }
+                    MovieService.getMovieFromGenreId(genreIds)
+                        .then((movies) => {
+                            resolve(movies);
+                        })
+                        .catch((error) => {
+                            reject(error);
                         });
                     })
                     .catch((error) => {
                         reject(error);
                     })
 
+            });
+        }
+    }
+
+    static getMovieFromGenreId(genreIds = null) {
+        if (genreIds) {
+            return new Promise((resolve, reject) => {
+                Movie.find({ genres: { "$in" : genreIds} }).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
+                    Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, movies) => {
+                        if (err) {
+                            reject(error);
+                        } else {
+                            resolve(movies);
+                        }
+                    });
+
+                });
             });
         }
     }
