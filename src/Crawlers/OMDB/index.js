@@ -26,6 +26,23 @@ class OMDBCrawler {
         });
     }
 
+    //Return promise
+    searchByName(title) {
+        return new Promise((resolve, reject) => {
+            //t => title
+            //plot => full | short
+            //r => json | xml
+            request.get({url: this.baseUrl , qs: {t: title, plot: "full", r: "json"}}, (error, response, body) => {
+                console.log(response.url);
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(body);
+                }
+            });
+        });
+    }
+
 }
 
 export default OMDBCrawler;

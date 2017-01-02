@@ -18,5 +18,14 @@ module.exports = function (app) {
         });
 
     });
+    app.get('/v1/test2', (req, res) => {
+        let tmdb = new TMDB();
+        tmdb.getSeriesName(req.query.tmdbID, (movie) => {
+            res.json(movie);
+        }, (error) => {
+            res.json(error);
+        });
+
+    });
 
 };

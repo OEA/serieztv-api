@@ -11,8 +11,6 @@ module.exports = function (app) {
             });
     });
 
-
-
     //It can be limited by limit query
     app.get('/v1/movie/top', (req, resp) => {
         let limit = req.query.limit;

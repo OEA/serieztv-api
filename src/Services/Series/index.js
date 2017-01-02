@@ -3,6 +3,7 @@
  */
 import mongoose from 'mongoose';
 import Series from '../../Models/Series.js';
+import GenreService from '../../Services/Genre';
 import Promise from 'bluebird';
 
 Promise.promisifyAll(mongoose);
@@ -19,6 +20,7 @@ class SeriesService {
         return new Promise((resolve, reject) => {
             series.save((error) => {
                 if (error) {
+                    console.log(error);
                     reject(SeriesErrorMessages.CANNOT_CREATE_SERIES);
                 } else {
                     resolve(series);
@@ -127,6 +129,126 @@ class SeriesService {
                 } else {
                     resolve(seriesList);
                 }
+            });
+        });
+    }
+
+    static getSeries() {
+        return new Promise((resolve, reject) => {
+            Series.find().populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
+
+                Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, seriesArray) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(seriesArray);
+                    }
+                });
+
+            });
+        });
+    }
+    static getTopImdbSeries(limit = 10) {
+        return new Promise((resolve, reject) => {
+            Series.find().limit(limit).sort({'imdbRating': -1}).populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
+                Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, seriesArray) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(seriesArray);
+                    }
+                });
+
+            });
+        });
+    }
+    static getRecentSeries(limit = 10) {
+        return new Promise((resolve, reject) => {
+            Series.find().limit(limit).sort({'firstAir': -1}).populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
+                Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, seriesArray) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(seriesArray);
+                    }
+                });
+
+            });
+        });
+    }
+
+    static getSeriesFromId(id = null) {
+        if (id) {
+            return new Promise((resolve, reject) => {
+                Series.findOne({_id: id}).populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
+                    Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, series) => {
+                        if (err) {
+                            reject(error);
+                        } else {
+                            resolve(series);
+                        }
+                    });
+
+                });
+            });
+        }
+    }
+
+    static getSeriesFromGenre(genre = null) {
+        if (genre) {
+            return new Promise((resolve, reject) => {
+                GenreService.search(genre)
+                    .then((genresObj) => {
+
+                        let genreIds = [];
+                        for (let genreObj of genresObj) {
+                            genreIds.push(genreObj._id);
+                        }
+                        SeriesService.getSeriesFromGenreId(genreIds)
+                            .then((series) => {
+                                resolve(series);
+                            })
+                            .catch((error) => {
+                                reject(error);
+                            });
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    })
+
+            });
+        }
+    }
+
+    static getSeriesFromGenreId(genreIds = null) {
+        if (genreIds) {
+            return new Promise((resolve, reject) => {
+                Series.find({ genres: { "$in" : genreIds} }).populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
+                    Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, series) => {
+                        if (err) {
+                            reject(error);
+                        } else {
+                            resolve(series);
+                        }
+                    });
+
+                });
+            });
+        }
+    }
+    static getSeriesFromName(name) {
+
+        var searchKey = new RegExp(name, 'i')
+        return new Promise((resolve, reject) => {
+            Series.find({ name: searchKey}).populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
+                Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, series) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(series);
+                    }
+                });
+
             });
         });
     }
