@@ -35,11 +35,20 @@ module.exports = function (app) {
         GenreService.search(query)
             .then((genres) => {
                 results.genres = genres;
-                return MovieService.getMovieFromName(query);
+                let genreIds = [];
+                for (let genre of genres) {
+                    genreIds.push(genre._id);
+                }
+                return MovieService.getMovieNameAndGenreIds(query, genreIds);
             })
             .then((movies) => {
+
                 results.movies = movies;
-                return SeriesService.getSeriesFromName(query);
+                let genreIds = [];
+                for (let genre of results.genres) {
+                    genreIds.push(genre._id);
+                }
+                return SeriesService.getSeriesNameAndGenreIds(query, genreIds);
             })
             .then((series) => {
                 results.series = series;

@@ -267,6 +267,22 @@ class SeriesService {
             });
         });
     }
+
+    static getSeriesNameAndGenreIds(name, genreIds) {
+        var searchKey = new RegExp(name, 'i')
+        return new Promise((resolve, reject) => {
+            Series.find({$or: [{name: searchKey}, { genres: { "$in" : genreIds}}]}).populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
+                Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, series) => {
+                    if (err) {
+                        reject(error);
+                    } else {
+                        resolve(series);
+                    }
+                });
+
+            });
+        });
+    }
 }
 
 export default SeriesService;
