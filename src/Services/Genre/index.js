@@ -84,6 +84,18 @@ class GenreService {
             });
         });
     }
+
+    static getGenreFromId(id) {
+        return new Promise((resolve, reject) => {
+            Genre.findOne({_id: id}).exec((error, genre) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(genre);
+                }
+            });
+        });
+    }
 }
 
 export default GenreService;
