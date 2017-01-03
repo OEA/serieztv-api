@@ -180,7 +180,7 @@ class MovieService {
     static getMovieFromId(id = null) {
         if (id) {
             return new Promise((resolve, reject) => {
-                Movie.findOne({_id: id}).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movie) => {
+                Movie.find({_id: id}).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movie) => {
                     Movie.populate(movie, {path: 'characters.star', model: 'Star'}, (err, movie) => {
                         if (err) {
                             reject(error);
