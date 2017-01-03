@@ -4,6 +4,7 @@
 
 import mongoose from 'mongoose';
 import Character from '../../Models/Character.js';
+import Star from '../../Models/Star.js';
 import Promise from 'bluebird';
 
 Promise.promisifyAll(mongoose);
@@ -80,6 +81,19 @@ class CharacterService {
                         resolve(characterStar.star);
                     }
                 });
+            });
+
+        });
+    }
+
+    static findCharactersFromStarId(id) {
+        return new Promise((resolve, reject) => {
+            Character.find({star: id}).exec((error, characters) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(characters);
+                }
             });
 
         });

@@ -268,6 +268,23 @@ class MovieService {
             });
         });
     }
+
+    static getMovieFromCharId(starIds = null) {
+        if (starIds) {
+            return new Promise((resolve, reject) => {
+                Movie.find({ characters: { "$in" : starIds} }).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
+                    Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, movies) => {
+                        if (err) {
+                            reject(error);
+                        } else {
+                            resolve(movies);
+                        }
+                    });
+
+                });
+            });
+        }
+    }
 }
 
 export default MovieService;

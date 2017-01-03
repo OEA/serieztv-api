@@ -283,6 +283,24 @@ class SeriesService {
             });
         });
     }
+
+
+    static getSeriesFromStarId(starIds = null) {
+        if (starIds) {
+            return new Promise((resolve, reject) => {
+                Series.find({ characters: { "$in" : starIds} }).populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
+                    Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, series) => {
+                        if (err) {
+                            reject(error);
+                        } else {
+                            resolve(series);
+                        }
+                    });
+
+                });
+            });
+        }
+    }
 }
 
 export default SeriesService;

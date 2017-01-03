@@ -65,6 +65,38 @@ class StarService {
 
         });
     }
+
+    static searchByName(value) {
+        return new Promise((resolve, reject) => {
+            Star.find({name:value}).count((error, count) => {
+                if (count == 0 || error) {
+                    reject(StarErrorMessages.STAR_NOT_EXIST);
+                }
+            }).then((count) => {
+                Star.find({name: value}, (error, stars) => {
+                    if (error) {
+
+                    } else {
+                        resolve(stars);
+                    }
+                });
+            });
+
+        });
+    }
+
+    static getList() {
+        return new Promise((resolve, reject) => {
+            Star.find().exec((error, stars) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(stars);
+                }
+            });
+        });
+    }
+
 }
 
 export default StarService;
