@@ -97,6 +97,20 @@ class StarService {
         });
     }
 
+    static queryStar(query) {
+        var searchKey = new RegExp(query, 'i');
+        return new Promise((resolve, reject) => {
+            Star.find({name: searchKey}).exec((error, stars) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(stars);
+                }
+            });
+
+        });
+    }
+
 }
 
 export default StarService;

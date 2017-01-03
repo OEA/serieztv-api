@@ -5,6 +5,7 @@ import TMDB from '../../../Crawlers/TMDB';
 import MovieService from '../../../Services/Movie';
 import SeriesService from '../../../Services/Series';
 import GenreService from '../../../Services/Genre';
+import StarService from '../../../Services/Star';
 module.exports = function (app) {
     app.get('/v1/hello-world', (req, res) => {
 
@@ -52,8 +53,12 @@ module.exports = function (app) {
             })
             .then((series) => {
                 results.series = series;
-                res.json(results);
+                return StarService.queryStar(query);
             })
+            .then((stars) => {
+                results.stars = stars;
+                res.json(results);
+            });
 
     });
 
