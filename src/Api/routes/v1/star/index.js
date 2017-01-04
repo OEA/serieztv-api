@@ -27,7 +27,7 @@ module.exports = function (app) {
                 for (let char of characters) {
                     characterIds.push(char._id);
                 }
-                return MovieService.getMovieFromId(characterIds);
+                return MovieService.getMovieFromCharId(characterIds);
             })
             .then((moviesArray) => {
                 movies = moviesArray;
