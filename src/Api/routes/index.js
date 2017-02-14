@@ -17,4 +17,5 @@ module.exports = (app) => {
     require('./v1/movie')(app);
     require('./v1/series')(app);
     require('./v1/star')(app);
+    require('./v1/list')(app);
 };
