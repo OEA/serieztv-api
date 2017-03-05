@@ -8,6 +8,7 @@ import Series from '../../Models/Series.js';
 import Movie from '../../Models/Movie.js';
 import Userlist from '../../Models/Userlist.js';
 
+
 Promise.promisifyAll(mongoose);
 
 const UserlistErrorMessages = {
@@ -59,11 +60,21 @@ class UserlistService {
                 }
             }).then((res) => {
                 Userlist.findOneAndUpdate({_id: id}, {$push: {"movies": movieId}}, {safe: true, upsert: true, new: true}, (err, result) => {
-                    if (err) {
-                        reject(err);
-                    }  else {
-                        resolve(result);
-                    }
+                    console.log("res is"+result)
+                    Userlist.populate(result, [{path: 'movies'}], ((error, list) => {
+                        Userlist.populate(list, ([{path: 'movies.characters', model: 'Character'}, {path: 'movies.genres', model: 'Genre'}]), (err, userList) => {
+                            Userlist.populate(userList, {path: 'movies.characters.star', model: 'Star'}, (err, moviesArray) => {
+                                if (error) {
+                                    console.log('error' + error);
+                                    reject(error);
+                                } else {
+                                    console.log('lsit'+moviesArray);
+                                    resolve(moviesArray);
+                                }
+                            });
+                        });
+
+                    }));
                 });
             });
 
@@ -78,11 +89,18 @@ class UserlistService {
                 }
             }).then((res) => {
                 Userlist.findOneAndUpdate({_id: id}, {$push: {"series": seriesId}}, {safe: true, upsert: true, new: true}, (err, result) => {
-                    if (err) {
-                        reject(err);
-                    }  else {
-                        resolve(result);
-                    }
+                    Userlist.populate(result, [{path: 'series'}], ((error, list) => {
+                        Userlist.populate(list, ([{path: 'series.characters', model: 'Character'}, {path: 'series.genres', model: 'Genre'},
+                            {path: 'series.seasons', model: 'Season'}]), (err, userList) => {
+                            Userlist.populate(userList, ([{path: 'series.characters.star', model: 'Star'}, {path: 'series.seasons.episodes', model: 'Episode'}]), (err, seriesArray) => {
+                                if (err) {
+                                    reject(error);
+                                } else {
+                                    resolve(seriesArray);
+                                }
+                            });
+                        });
+                    }));
                 });
             });
 
@@ -97,11 +115,20 @@ class UserlistService {
                 }
             }).then((res) => {
                 Userlist.findOneAndUpdate({_id: id}, {$pull: {"movies": movieId}}, {safe: true, upsert: true, new: true}, (err, result) => {
-                    if (err) {
-                        reject(err);
-                    }  else {
-                        resolve(result);
-                    }
+                    Userlist.populate(result, [{path: 'movies'}], ((error, list) => {
+                        Userlist.populate(list, ([{path: 'movies.characters', model: 'Character'}, {path: 'movies.genres', model: 'Genre'}]), (err, userList) => {
+                            Userlist.populate(userList, {path: 'movies.characters.star', model: 'Star'}, (err, moviesArray) => {
+                                if (error) {
+                                    console.log('error' + error);
+                                    reject(error);
+                                } else {
+                                    console.log('lsit'+moviesArray);
+                                    resolve(moviesArray);
+                                }
+                            });
+                        });
+
+                    }));
                 });
             });
 
@@ -116,11 +143,18 @@ class UserlistService {
                 }
             }).then((res) => {
                 Userlist.findOneAndUpdate({_id: id}, {$pull: {"movies": seriesId}}, {safe: true, upsert: true, new: true}, (err, result) => {
-                    if (err) {
-                        reject(err);
-                    }  else {
-                        resolve(result);
-                    }
+                    Userlist.populate(result, [{path: 'series'}], ((error, list) => {
+                        Userlist.populate(list, ([{path: 'series.characters', model: 'Character'}, {path: 'series.genres', model: 'Genre'},
+                            {path: 'series.seasons', model: 'Season'}]), (err, userList) => {
+                            Userlist.populate(userList, ([{path: 'series.characters.star', model: 'Star'}, {path: 'series.seasons.episodes', model: 'Episode'}]), (err, seriesArray) => {
+                                if (err) {
+                                    reject(error);
+                                } else {
+                                    resolve(seriesArray);
+                                }
+                            });
+                        });
+                    }));
                 });
             });
 
@@ -129,46 +163,14 @@ class UserlistService {
 
     static getMovies(id) {
         return new Promise((resolve, reject) => {
-       /*     Userlist.findById(id).populate([{path: 'movies'}]).exec((error, list) => {
-               // Userlist.populate(list, ([{path: 'characters'}, {path: 'genres'}]), (err, userList) => {
-                   // Userlist.populate(userList, {path: 'characters.star', model: 'Star'}, (err, moviesArray) => {
+            Userlist.findById(id).populate([{path: 'movies'}]).exec((error, list) => {
+                Userlist.populate(list, ([{path: 'movies.characters', model: 'Character'}, {path: 'movies.genres', model: 'Genre'}]), (err, userList) => {
+                    Userlist.populate(userList, {path: 'movies.characters.star', model: 'Star'}, (err, moviesArray) => {
                         if (error) {
                             console.log('error' + error);
                             reject(error);
                         } else {
-                            console.log('lsit'+list);
-                            resolve(list);
-                        }
-                //    });
-               // });
-
-            });*/
-
-            Userlist.findOne({_id:id}, (error, list) => {
-                if (error) {
-                    console.log('error' + error);
-                    console.log(id);
-                    reject(error);
-                } else {
-                    console.log('lsit'+list);
-                    console.log(id);
-                    resolve(list);
-                }
-            });
-        });
-
-
-    }
-
-    static getSeries(id) {
-        return new Promise((resolve, reject) => {
-            Userlist.findOne({_id: id}).populate([{path: 'series'}]).exec((error, list) => {
-                Userlist.populate(list, ([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]), (err, userList) => {
-                    Userlist.populate(userList, {path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}, (err, seriesArray) => {
-                        if (err) {
-                            reject(error);
-                        } else {
-                            resolve(seriesArray);
+                            resolve(moviesArray);
                         }
                     });
                 });
@@ -179,16 +181,36 @@ class UserlistService {
 
     static getAllMedia(id) {
         return new Promise((resolve, reject) => {
-            Series.findOne({_id: id}).populate([{path: 'characters'}, {path: 'genres'}, {path: 'seasons'}]).exec((error, series) => {
-
-                Series.populate(series, [{path: 'characters.star', model: 'Star'}, {path: 'seasons.episodes', model: 'Episode'}], (err, seriesArray) => {
-                    if (err) {
-                        reject(error);
-                    } else {
-                        resolve(seriesArray);
-                    }
+            Userlist.findOne({_id: id}).populate([{path: 'movies', model:'Movie'}, {path: 'series', model:'Series'}]).exec((error, list) => {
+                Userlist.populate(list, ([{path: 'series.characters', model: 'Character'}, {path: 'series.genres', model: 'Genre'},
+                    {path: 'series.seasons', model: 'Season'}, {path: 'movies.characters', model: 'Character'},
+                    {path: 'movies.genres', model: 'Genre'}]), (err, userList) => {
+                    Userlist.populate(userList, ([{path: 'series.characters.star', model: 'Star'}, {path: 'series.seasons.episodes', model: 'Episode'},
+                        {path: 'movies.characters.star', model: 'Star'}]), (err, seriesArray) => {
+                        if (err) {
+                            reject(error);
+                        } else {
+                            resolve(seriesArray.movies + seriesArray.series);
+                        }
+                    });
                 });
+            });
+        });
+    }
 
+    static getSeries(id) {
+        return new Promise((resolve, reject) => {
+            Userlist.findOne({_id: id}).populate([{path: 'series'}]).exec((error, list) => {
+                Userlist.populate(list, ([{path: 'series.characters', model: 'Character'}, {path: 'series.genres', model: 'Genre'},
+                    {path: 'series.seasons', model: 'Season'}]), (err, userList) => {
+                    Userlist.populate(userList, ([{path: 'series.characters.star', model: 'Star'}, {path: 'series.seasons.episodes', model: 'Episode'}]), (err, seriesArray) => {
+                        if (err) {
+                            reject(error);
+                        } else {
+                            resolve(seriesArray);
+                        }
+                    });
+                });
             });
         });
     }
@@ -218,7 +240,16 @@ class UserlistService {
     }
 
     static getListsOfUser(userId) {
-        Userlist.find({userId: userId})
+        return new Promise((resolve, reject) => {
+            Userlist.find({userId: userId}, (error, lists) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    console.log("userlists" + lists)
+                    resolve(lists);
+                }
+            });
+        });
     }
 }
 
