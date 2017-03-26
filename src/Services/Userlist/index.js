@@ -190,7 +190,7 @@ class UserlistService {
                         if (err) {
                             reject(error);
                         } else {
-                            resolve(seriesArray.movies + seriesArray.series);
+                            resolve({movies: seriesArray.movies, series: seriesArray.series});
                         }
                     });
                 });
