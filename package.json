@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "nodemon --exec babel-node src/app.js",
     "prestart": "babel src --out-dir dist",
-    "start": "node dist/app.js"
-    //"test": "mocha --timeout 10000 --require babel-core/register"
+    "start": "node dist/app.js",
+    "test": "## mocha --timeout 10000 --require babel-core/register"
   },
   "repository": {
     "type": "git",
