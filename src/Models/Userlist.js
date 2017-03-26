@@ -5,10 +5,10 @@ import mongoose from 'mongoose'
 var Schema = mongoose.Schema;
 
 const userListSchema = new Schema ({
-    userId: {type: mongoose.Schema.ObjectId, ref:'User', required: true},
+    userId: {type: mongoose.Schema.ObjectId, ref:'User'},
     movies: [{type: mongoose.Schema.ObjectId, ref:'Movie'}],
     series: [{type: mongoose.Schema.ObjectId, ref:'Series'}],
-    listName: {type: String, unique: true},
+    listName: {type: String},
     isPrivate: {type: Boolean, default: false}
 });
 

@@ -8,8 +8,17 @@ import UserService from '../../../../Services/Userlist';
 import Userlist from '../../../../Models/Userlist';
 
 module.exports = function (app) {
+
+    app.get('/v1/userlist/userlists', (req, resp) => {
+        let userId = req.query.userId;
+        UserService.getListsOfUser(userId)
+            .then((list) => {
+                resp.json(list);
+            });
+    });
+
     app.get('/v1/userlist/series', (req, resp) => {
-        let listId = req.params.id;
+        let listId = req.query.listId;
         UserService.getSeries(listId)
             .then((list) => {
                 resp.json(list);
@@ -17,7 +26,7 @@ module.exports = function (app) {
     });
 
     app.get('/v1/userlist/movies', (req, resp) => {
-        let listId = req.params.listId;
+        let listId = req.query.listId;
         UserService.getMovies(listId)
             .then((list) => {
                 resp.json(list);
@@ -25,7 +34,7 @@ module.exports = function (app) {
     });
 
     app.get('/v1/userlist/all', (req, resp) => {
-        let listId = req.params.id;
+        let listId = req.query.listId;
         UserService.getAllMedia(listId)
             .then((list) => {
                 resp.json(list);
@@ -80,7 +89,7 @@ module.exports = function (app) {
             })
     });
 
-    app.post('/v1/userlist/changestatus', (req, res) => {
+    app.put('/v1/userlist/changestatus', (req, res) => {
         let listId = req.body.id;
         let newStatus = req.body.newStatus;
 
