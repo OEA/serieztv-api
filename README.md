@@ -32,7 +32,11 @@ For development
 For production
 
     npm start
-  
+
+
+## Automation
+
+Automation will be explained.
 
 
 
