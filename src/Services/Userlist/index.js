@@ -142,7 +142,7 @@ class UserlistService {
                     reject(UserlistErrorMessages.LIST_NOT_EXIST);
                 }
             }).then((res) => {
-                Userlist.findOneAndUpdate({_id: id}, {$pull: {"movies": seriesId}}, {safe: true, upsert: true, new: true}, (err, result) => {
+                Userlist.findOneAndUpdate({_id: id}, {$pull: {"series": seriesId}}, {safe: true, upsert: true, new: true}, (err, result) => {
                     Userlist.populate(result, [{path: 'series'}], ((error, list) => {
                         Userlist.populate(list, ([{path: 'series.characters', model: 'Character'}, {path: 'series.genres', model: 'Genre'},
                             {path: 'series.seasons', model: 'Season'}]), (err, userList) => {

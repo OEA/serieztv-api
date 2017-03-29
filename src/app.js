@@ -9,7 +9,7 @@ app.enable('trust proxy');
 
 mongoose.connect('mongodb://localhost/serieztv');
 mongoose.promise = bluebird;
-
+// mongoose.connect('mongodb://52.90.67.168:3000/');
 let db = mongoose.connection;
 
 db.afterOpen = function (next) {

@@ -15,17 +15,58 @@ const RatingErrorMessages = {
 };
 
 class RatingService {
-
+/*
+ {$or: [
+ { $and: [{userId: rating.userId}, {movie: rating.movie}]},
+ { $and: [{userId: rating.userId}, {series: rating.series}]}
+ */
     static create(rating) {
         return new Promise((resolve, reject) => {
-            rating.save((error) => {
-                if (error) {
-                    console.log(error);
-                    reject(RatingErrorMessages.CANNOT_CREATE_RATING);
-                } else {
-                    resolve(rating);
-                }
-            });
+            if (rating.movie != null) {
+                Rating.findOne({$and: [{userId: rating.userId}, {movie: rating.movie}]}).exec((error, rate) => {
+                    if (error) {
+                        console.log('error' + error);
+                    } else if (rate == null) {
+                        // console.log('in save '+ ratings.length)
+                        console.log('in save '+ rate)
+                        rating.save((error) => {
+                            if (error) {
+                                console.log(error);
+                                reject(RatingErrorMessages.CANNOT_CREATE_RATING);
+                            } else {
+                                //        console.log(rating)
+                                resolve(rating);
+                            }
+                        });
+                    } else {
+                        console.log('in update ' + rate)
+                        //  var rate = ratings[0]
+                        resolve(this.updateRatingOf(rate.id, rating.rating));
+                    }
+                })
+            } else {
+                Rating.findOne({$and: [{userId: rating.userId}, {series: rating.series}]}).exec((error, rate) => {
+                    if (error) {
+                        console.log('error' + error);
+                    } else if (rate == null) {
+                        // console.log('in save '+ ratings.length)
+                        console.log('in save '+ rate)
+                        rating.save((error) => {
+                            if (error) {
+                                console.log(error);
+                                reject(RatingErrorMessages.CANNOT_CREATE_RATING);
+                            } else {
+                                //        console.log(rating)
+                                resolve(rating);
+                            }
+                        });
+                    } else {
+                        console.log('in update ' + rate)
+                        //  var rate = ratings[0]
+                        resolve(this.updateRatingOf(rate.id, rating.rating));
+                    }
+                })
+            }
         });
     }
 
@@ -49,11 +90,15 @@ class RatingService {
     }
 
     static updateRatingOf(id, newRating) {
+        console.log(id)
+        console.log(newRating)
         return new Promise((resolve, reject) => {
             Rating.findOneAndUpdate({_id: id}, {rating: newRating}, {new: true}, (err, result) => {
                 if (err) {
+                    console.log(err)
                     reject(err);
                 }  else {
+                    console.log('result is ' + result)
                     resolve(result);
                 }
             });
@@ -62,12 +107,13 @@ class RatingService {
 
     static getRateForSeries(seriesId, userId) {
         return new Promise((resolve, reject) => {
-            Rating.find({userId: userId, series: seriesId}, (error, rating) => {
+            Rating.findOne({userId: userId, series: seriesId}, (error, rating) => {
                 if (error) {
                     reject(error);
                 } else {
-                    console.log(rating)
-                    resolve(rating);
+                    if (rating != null) {
+                        resolve(rating);
+                    }
                 }
             });
         });
@@ -75,11 +121,13 @@ class RatingService {
 
     static getRateForMovie(movieId, userId) {
         return new Promise((resolve, reject) => {
-            Rating.find({userId: userId, movie: movieId}, (error, rating) => {
+            Rating.findOne({userId: userId, movie: movieId}, (error, rating) => {
                 if (error) {
                     reject(error);
                 } else {
-                    resolve(rating);
+                    if (rating != null) {
+                        resolve(rating);
+                    }
                 }
             });
         });
