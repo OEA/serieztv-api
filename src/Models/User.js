@@ -12,6 +12,10 @@ const userSchema = new Schema ({
     apiID: {type: String, select: false},
     createdAt: {type: Date},
     updatedAt: {type: Date},
+    followers: [{type: mongoose.Schema.ObjectId, ref:'User'}],
+    following: [{type: mongoose.Schema.ObjectId, ref:'User'}],
+    followedMovies: [{type: mongoose.Schema.ObjectId, ref:'Movie'}],
+    followedSeries: [{type: mongoose.Schema.ObjectId, ref:'Series'}],
     __v: {type: Number, select: false},
 });
 
