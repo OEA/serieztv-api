@@ -211,7 +211,7 @@ class Login {
                     reject(Messages.USER_NOT_EXIST);
                 }
             }).then((res) => {
-                User.findOneAndUpdate({_id: id}, {$pull: {"followedMovies": movieId}}, {safe: true, upsert: true, new: true}, (err, result) => {
+                User.findOneAndUpdate({_id: id}, {$addToSet: {"followedMovies": movieId}}, {safe: true, upsert: true, new: true}, (err, result) => {
                     User.populate(result, [{path: 'following',  model: 'User'}, {path: 'followers',  model: 'User'},
                         {path: 'followedMovies',  model: 'Movie'}, {path: 'followedSeries',  model: 'Series'}], ((error, populated) => {
                         User.populate(populated, ([{path: 'followedMovies.characters', model: 'Character'}, {path: 'followedSeries.characters', model: 'Character'},
@@ -320,7 +320,7 @@ class Login {
                                 if (err) {
                                     reject(error);
                                 } else {
-                                    resolve({followedMovies: seriesArray});
+                                    resolve({followedMovies: seriesArray.followedMovies});
                                 }
                             });
                         });
@@ -348,7 +348,7 @@ class Login {
                                 if (err) {
                                     reject(error);
                                 } else {
-                                    resolve({followedSeries: seriesArray});
+                                    resolve({followedSeries: seriesArray.followedSeries});
                                 }
                             });
                         });
