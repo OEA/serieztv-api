@@ -13,7 +13,9 @@ module.exports = function (app) {
 
     app.get('/v1/test', (req, res) => {
         let tmdb = new TMDB();
-        tmdb.getFilmName(req.query.tmdbID, (movie) => {
+        const imdbScore = req.query.imdbScore;
+        const imdbRating = req.query.imdbRating;
+        tmdb.getFilmName(req.query.tmdbID,imdbScore,imdbRating, (movie) => {
             res.json(movie);
         }, (error) => {
             res.json(error);
@@ -22,7 +24,9 @@ module.exports = function (app) {
     });
     app.get('/v1/test2', (req, res) => {
         let tmdb = new TMDB();
-        tmdb.getSeriesName(req.query.tmdbID, (movie) => {
+        const imdbScore = req.query.imdbScore;
+        const imdbRating = req.query.imdbRating;
+        tmdb.getSeriesName(req.query.tmdbID,imdbScore,imdbRating, (movie) => {
             res.json(movie);
         }, (error) => {
             res.json(error);

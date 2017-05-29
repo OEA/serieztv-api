@@ -83,4 +83,12 @@ module.exports = function (app) {
 
     });
 
+    app.get('/v1/movie/starsearch', (req, resp) => {
+        const name = req.query.star;
+        MovieService.getMovieFromStarName(name)
+            .then((movies) => {
+                resp.json(movies);
+            });
+    });
+
 };

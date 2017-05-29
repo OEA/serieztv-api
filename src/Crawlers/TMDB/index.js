@@ -31,10 +31,9 @@ class TMDBCrawler {
         this.series = new Series({});
     }
 
-    getFilmName(id, success, fail) {
+    getFilmName(id,imdbScore,imdbRating, success, fail) {
         request
             .get({url: this.movieUrl + id, form: {api_key: this.apiKey}}, (error, response, body) => {
-
                 let bodyJson = JSON.parse(body);
                 this.movie.set('name', bodyJson.original_title);
                 this.movie.set('overview', bodyJson.overview);
@@ -45,6 +44,8 @@ class TMDBCrawler {
                 this.movie.set('image', bodyJson.backdrop_path);
                 this.movie.set('apiID', bodyJson.id);
                 this.movie.set('imdbID', bodyJson.imdb_id);
+                this.movie.set('imdbRating', Number.parseFloat(imdbRating));
+                this.movie.set('imdbScore', Number.parseFloat(imdbScore.replace(/,/g , "")));
                 const genres = this.getGenresFromMovieBody(body);
                 Promise.all(genres)
                     .then((genres) => {
@@ -71,33 +72,24 @@ class TMDBCrawler {
                         this.movie.set('characters', characterIds);
                     })
                     .then(() => {
+                        MovieService.create(this.movie)
+                            .then((movie) => {
+                                success({success: true, movie: movie});
+                            })
+                            .then(() => {
 
-                        const omdbCrawler = new OMDBCrawler();
-                        omdbCrawler.searchById(this.movie.imdbID)
-                            .then((json) => {
-                                const jsonBody = JSON.parse(json);
-                                this.movie.set('imdbRating', Number.parseFloat(jsonBody.imdbRating));
-                                this.movie.set('imdbScore', Number.parseFloat(jsonBody.imdbVotes.replace(/,/g , "")));
-                                MovieService.create(this.movie)
-                                    .then((movie) => {
-                                        success({success: true, movie: movie});
-                                    })
-                                    .then(() => {
+                                for (var i = 0; i<this.posterSizes.length; i++) {
+                                    this.downloadImageOfMovie(this.imageUrl + this.posterSizes[i] + bodyJson.poster_path, 'images/poster/' + this.posterSizes[i] + '/' + this.movie._id + '.jpg');
+                                }
+                                for (var i = 0; i<this.backDropSizes.length; i++) {
+                                    this.downloadImageOfMovie(this.imageUrl + this.backDropSizes[i] + bodyJson.backdrop_path, 'images/backdrop/' + this.backDropSizes[i] + '/' + this.movie._id + '.jpg');
+                                }
 
-                                        for (var i = 0; i<this.posterSizes.length; i++) {
-                                            this.downloadImageOfMovie(this.imageUrl + this.posterSizes[i] + bodyJson.poster_path, 'images/poster/' + this.posterSizes[i] + '/' + this.movie._id + '.jpg');
-                                        }
-                                        for (var i = 0; i<this.backDropSizes.length; i++) {
-                                            this.downloadImageOfMovie(this.imageUrl + this.backDropSizes[i] + bodyJson.backdrop_path, 'images/backdrop/' + this.backDropSizes[i] + '/' + this.movie._id + '.jpg');
-                                        }
-
-                                    })
-                                    .catch((error) => {
-                                        console.log(error);
-                                        fail(error);
-                                    });
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                fail(error);
                             });
-
 
                     })
                     .catch((error) => {
@@ -108,7 +100,7 @@ class TMDBCrawler {
             });
     }
 
-    getSeriesName(id, success, fail) {
+    getSeriesName(id,imdbScore,imdbRating, success, fail) {
         request
             .get({url: this.seriesUrl + id, form: {api_key: this.apiKey}}, (error, response, body) => {
 
@@ -121,6 +113,7 @@ class TMDBCrawler {
                 this.series.set('firstAir', bodyJson.first_air_date);
                 this.series.set('poster', bodyJson.poster_path);
                 this.series.set('image', bodyJson.backdrop_path);
+                this.series.set('imdbID', bodyJson.imdb_id);
                 this.series.set('apiID', bodyJson.id);
                 this.series.set('active', true);
                 const genres = this.getGenresFromMovieBody(body);
@@ -178,24 +171,13 @@ class TMDBCrawler {
                     })
                     .then(() => {
 
-                        const omdbCrawler = new OMDBCrawler();
-                        omdbCrawler.searchByName(this.series.name)
-                            .then((json) => {
-                                const jsonBody = JSON.parse(json);
-                                console.log(jsonBody);
-                                console.log(this.series.name);
-                                this.series.set('imdbID',jsonBody.imdbID);
-                                this.series.set('imdbRating', Number.parseFloat(jsonBody.imdbRating));
-                                this.series.set('imdbScore', Number.parseFloat(jsonBody.imdbVotes.replace(/,/g , "")));
+                        this.series.set('imdbRating', Number.parseFloat(imdbRating));
+                        this.series.set('imdbScore', Number.parseFloat(imdbScore.replace(/,/g , "")));
 
-                                SeriesService.create(this.series)
-                                    .then((series) => {
-                                        success(series);
-                                    });
-
+                        SeriesService.create(this.series)
+                            .then((series) => {
+                                success(series);
                             });
-
-
                     })
                     .then(() => {
                         for (var i = 0; i<this.posterSizes.length; i++) {

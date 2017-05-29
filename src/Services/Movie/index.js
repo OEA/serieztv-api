@@ -3,8 +3,10 @@
  */
 import mongoose from 'mongoose';
 import Movie from '../../Models/Movie.js';
+import Star from '../../Models/Star.js';
 import GenreService from '../Genre';
 import Promise from 'bluebird';
+import {} from 'mongoosastic';
 
 Promise.promisifyAll(mongoose);
 
@@ -19,6 +21,14 @@ class MovieService {
     static create(movie) {
         return new Promise((resolve, reject) => {
             movie.save((error) => {
+
+                movie.on('es-indexed', function(err, res){
+                    console.log(err);
+                    if (err) throw err;
+                    /* Document is indexed */
+
+                });
+
                 if (error) {
                     reject(MovieErrorMessages.CANNOT_CREATE_MOVIE);
                 } else {
@@ -49,18 +59,14 @@ class MovieService {
 
     static searchByName(value) {
         return new Promise((resolve, reject) => {
-            Movie.find({name:value}).count((error, count) => {
-                if (count == 0 || error) {
+            Movie.search({
+                name: value
+            }, (error, results) => {
+                if (error) {
                     reject(MovieErrorMessages.MOVIE_NOT_EXIST);
+                } else {
+                    resolve(results);
                 }
-            }).then((count) => {
-                Movie.find({name: value}, (error, movies) => {
-                    if (error) {
-
-                    } else {
-                        resolve(movies);
-                    }
-                });
             });
 
         });
@@ -134,7 +140,7 @@ class MovieService {
 
     static getMovies() {
         return new Promise((resolve, reject) => {
-            Movie.find().populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
+            Movie.find({},{'_id': 0}).populate([{path: 'characters', select: '-_id -__v'}, {path: 'genres', select:'-_id -__v'}]).exec((error, movies) => {
 
                 Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, moviesArray) => {
                     if (err) {
@@ -240,15 +246,23 @@ class MovieService {
 
         var searchKey = new RegExp(name, 'i');
         return new Promise((resolve, reject) => {
-            Movie.find({ name: searchKey}).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
-                Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, movies) => {
-                    if (err) {
-                        reject(error);
-                    } else {
-                        resolve(movies);
+            Movie.search(
+                {
+                    "match": {
+                        "name": name
                     }
-                });
-
+                }
+            , (error, results) => {
+                console.log(error);
+                if (error) {
+                    reject(MovieErrorMessages.MOVIE_NOT_EXIST);
+                } else {
+                    const moviesArray = [];
+                    for (let movieHit of results.hits.hits) {
+                        moviesArray.push(movieHit._source);
+                    }
+                    resolve(moviesArray);
+                }
             });
         });
     }
@@ -284,6 +298,27 @@ class MovieService {
                 });
             });
         }
+    }
+
+    static getMovieFromStarName(starName = null) {
+        return new Promise((resolve, reject) => {
+            Star.find({"name": /Marlon/}, (error, stars) => {
+                const starIds = [];
+                for (let star of stars) {
+                    starIds.push(star._id);
+                }
+                Movie.find({characters: {$in: ["592aa03bce287616d5a35f47"]}}).populate([{path: 'characters'}, {path: 'genres'}]).exec((error, movies) => {
+                    Movie.populate(movies, {path: 'characters.star', model: 'Star'}, (err, movies) => {
+                        if (err) {
+                            reject(error);
+                        } else {
+                            resolve(movies);
+                        }
+                    });
+
+                });
+            });
+        });
     }
 }
 
